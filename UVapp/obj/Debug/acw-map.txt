@@ -1,0 +1,4 @@
+UVapp.MainActivity, UVapp;md5e104c6b7ee35fcbfe7c71b926ed36002.MainActivity
+UVapp.MainActivity, UVapp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null;md5e104c6b7ee35fcbfe7c71b926ed36002.MainActivity
+UVapp.MainActivity;md5e104c6b7ee35fcbfe7c71b926ed36002.MainActivity
+uvapp.MainActivity;md5e104c6b7ee35fcbfe7c71b926ed36002.MainActivity
