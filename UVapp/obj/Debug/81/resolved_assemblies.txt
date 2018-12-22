@@ -1,22 +1,22 @@
-D:\Academic\TAU\IDE Environments\Visual Studio\UVapp\UVapp\obj\Debug\81\android\assets\UVapp.dll
-D:\Academic\TAU\IDE Environments\Visual Studio\UVapp\UVapp\obj\Debug\81\android\assets\Java.Interop.dll
-D:\Academic\TAU\IDE Environments\Visual Studio\UVapp\UVapp\obj\Debug\81\android\assets\Microsoft.Band.Android.dll
-D:\Academic\TAU\IDE Environments\Visual Studio\UVapp\UVapp\obj\Debug\81\android\assets\Mono.Android.dll
-D:\Academic\TAU\IDE Environments\Visual Studio\UVapp\UVapp\obj\Debug\81\android\assets\mscorlib.dll
-D:\Academic\TAU\IDE Environments\Visual Studio\UVapp\UVapp\obj\Debug\81\android\assets\Newtonsoft.Json.dll
-D:\Academic\TAU\IDE Environments\Visual Studio\UVapp\UVapp\obj\Debug\81\android\assets\System.Core.dll
-D:\Academic\TAU\IDE Environments\Visual Studio\UVapp\UVapp\obj\Debug\81\android\assets\System.dll
-D:\Academic\TAU\IDE Environments\Visual Studio\UVapp\UVapp\obj\Debug\81\android\assets\System.Net.Http.dll
-D:\Academic\TAU\IDE Environments\Visual Studio\UVapp\UVapp\obj\Debug\81\android\assets\System.Xml.dll
-D:\Academic\TAU\IDE Environments\Visual Studio\UVapp\UVapp\obj\Debug\81\android\assets\System.Runtime.Serialization.dll
-D:\Academic\TAU\IDE Environments\Visual Studio\UVapp\UVapp\obj\Debug\81\android\assets\System.ServiceModel.Internals.dll
-D:\Academic\TAU\IDE Environments\Visual Studio\UVapp\UVapp\obj\Debug\81\android\assets\netstandard.dll
-D:\Academic\TAU\IDE Environments\Visual Studio\UVapp\UVapp\obj\Debug\81\android\assets\System.Data.dll
-D:\Academic\TAU\IDE Environments\Visual Studio\UVapp\UVapp\obj\Debug\81\android\assets\System.Numerics.dll
-D:\Academic\TAU\IDE Environments\Visual Studio\UVapp\UVapp\obj\Debug\81\android\assets\System.Transactions.dll
-D:\Academic\TAU\IDE Environments\Visual Studio\UVapp\UVapp\obj\Debug\81\android\assets\System.IO.Compression.dll
-D:\Academic\TAU\IDE Environments\Visual Studio\UVapp\UVapp\obj\Debug\81\android\assets\System.IO.Compression.FileSystem.dll
-D:\Academic\TAU\IDE Environments\Visual Studio\UVapp\UVapp\obj\Debug\81\android\assets\System.ComponentModel.Composition.dll
-D:\Academic\TAU\IDE Environments\Visual Studio\UVapp\UVapp\obj\Debug\81\android\assets\System.Web.Services.dll
-D:\Academic\TAU\IDE Environments\Visual Studio\UVapp\UVapp\obj\Debug\81\android\assets\System.Xml.Linq.dll
-D:\Academic\TAU\IDE Environments\Visual Studio\UVapp\UVapp\obj\Debug\81\android\assets\Mono.Security.dll
+D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\obj\Debug\81\android\assets\UVapp.dll
+D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\obj\Debug\81\android\assets\Java.Interop.dll
+D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\obj\Debug\81\android\assets\Microsoft.Band.Android.dll
+D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\obj\Debug\81\android\assets\Mono.Android.dll
+D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\obj\Debug\81\android\assets\mscorlib.dll
+D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\obj\Debug\81\android\assets\Newtonsoft.Json.dll
+D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\obj\Debug\81\android\assets\System.Core.dll
+D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\obj\Debug\81\android\assets\System.dll
+D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\obj\Debug\81\android\assets\System.Net.Http.dll
+D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\obj\Debug\81\android\assets\System.Xml.dll
+D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\obj\Debug\81\android\assets\System.Runtime.Serialization.dll
+D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\obj\Debug\81\android\assets\System.ServiceModel.Internals.dll
+D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\obj\Debug\81\android\assets\netstandard.dll
+D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\obj\Debug\81\android\assets\System.Data.dll
+D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\obj\Debug\81\android\assets\System.Numerics.dll
+D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\obj\Debug\81\android\assets\System.Transactions.dll
+D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\obj\Debug\81\android\assets\System.IO.Compression.dll
+D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\obj\Debug\81\android\assets\System.IO.Compression.FileSystem.dll
+D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\obj\Debug\81\android\assets\System.ComponentModel.Composition.dll
+D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\obj\Debug\81\android\assets\System.Web.Services.dll
+D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\obj\Debug\81\android\assets\System.Xml.Linq.dll
+D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\obj\Debug\81\android\assets\Mono.Security.dll

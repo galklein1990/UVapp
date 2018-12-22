@@ -74,7 +74,7 @@ namespace UVapp
             
         }
 
-        private void getUVClick(object sender, System.EventArgs e)
+        private async void getUVClick(object sender, System.EventArgs e)
         {
             //try
             //{
@@ -86,16 +86,22 @@ namespace UVapp
             }
 
             var uvSensor = bandClient.SensorManager.CreateUVSensor();
-                
+            UVIndexLevel uvi = null;
+            Boolean uvRead = false;
+
+            string recString;
             uvSensor.ReadingChanged += (o, args) =>
             {
                     
-                UVIndexLevel uvi = args.SensorReading.UVIndexLevel;
-                RunOnUiThread(() => {
+                uvi = args.SensorReading.UVIndexLevel;
+                uvRead = true;
+                
+                RunOnUiThread(async () => {      // To access the text, you need to run on ui thread
                     recommendation.Text = "Getting recommendation...";
-                    // I don't know how to get a numerical 0-11 value
-                    string recString = ClientRecommendations.getEnumUVRecommendation(uvi);
+
+                    recString = await getEnumUVRecommendation(uvi);
                     recommendation.Text = recString;
+
                     //uvSensor.StopReadings();
                 });
                 
@@ -103,12 +109,13 @@ namespace UVapp
 
             recommendation.Text = "Getting UV Reading...";
             uvSensor.StartReadings();
-                
-           // }
+
+
+            // }
             //catch (BandException ex)
-           // {
-              //  recommendation.Text = ex.Message;
-           // }
+            // {
+            //  recommendation.Text = ex.Message;
+            // }
         }
 
 

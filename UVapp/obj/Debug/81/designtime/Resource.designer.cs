@@ -31,17 +31,17 @@ namespace UVapp
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7F020003
-			public const int connectbtn = 2130837507;
+			// aapt resource value: 0x7F010003
+			public const int connectbtn = 2130771971;
 			
-			// aapt resource value: 0x7F020004
-			public const int getUVbtn = 2130837508;
+			// aapt resource value: 0x7F010004
+			public const int getUVbtn = 2130771972;
 			
-			// aapt resource value: 0x7F020002
-			public const int greetTxt = 2130837506;
+			// aapt resource value: 0x7F010002
+			public const int greetTxt = 2130771970;
 			
-			// aapt resource value: 0x7F020005
-			public const int recommendTxt = 2130837509;
+			// aapt resource value: 0x7F010005
+			public const int recommendTxt = 2130771973;
 			
 			static Id()
 			{
@@ -56,11 +56,8 @@ namespace UVapp
 		public partial class Layout
 		{
 			
-			// aapt resource value: 0x7F010002
-			public const int desktop = 2130771970;
-			
-			// aapt resource value: 0x7F010003
-			public const int Main = 2130771971;
+			// aapt resource value: 0x7F020002
+			public const int Main = 2130837506;
 			
 			static Layout()
 			{

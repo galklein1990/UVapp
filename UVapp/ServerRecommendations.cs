@@ -1,4 +1,4 @@
-﻿using System;
+﻿  using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,12 +28,12 @@ namespace UVapp
             var uri = new Uri(funcUri);
             var json = JsonConvert.SerializeObject(new { uvi = uviLevel.Name() });
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-
+            Console.WriteLine("Connecting to server");
 
             HttpResponseMessage response = await client.PostAsync(uri, content);
             if (response.IsSuccessStatusCode)
             {
-                return response.Content.ToString();
+                return await response.Content.ReadAsStringAsync();
             }
             else
             {
