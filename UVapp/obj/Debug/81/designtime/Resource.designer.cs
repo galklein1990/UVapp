@@ -32,16 +32,22 @@ namespace UVapp
 		{
 			
 			// aapt resource value: 0x7F010003
-			public const int connectbtn = 2130771971;
-			
-			// aapt resource value: 0x7F010004
-			public const int getUVbtn = 2130771972;
+			public const int bandConnectionText = 2130771971;
 			
 			// aapt resource value: 0x7F010002
-			public const int greetTxt = 2130771970;
+			public const int connectbtn = 2130771970;
+			
+			// aapt resource value: 0x7F010007
+			public const int currentlySamplingText = 2130771975;
+			
+			// aapt resource value: 0x7F010004
+			public const int currentUVText = 2130771972;
+			
+			// aapt resource value: 0x7F010006
+			public const int samplingIntervalText = 2130771974;
 			
 			// aapt resource value: 0x7F010005
-			public const int recommendTxt = 2130771973;
+			public const int uvMinutesText = 2130771973;
 			
 			static Id()
 			{
@@ -81,6 +87,22 @@ namespace UVapp
 			}
 			
 			private String()
+			{
+			}
+		}
+		
+		public partial class Style
+		{
+			
+			// aapt resource value: 0x7F040002
+			public const int Theme_Custom = 2130968578;
+			
+			static Style()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Style()
 			{
 			}
 		}

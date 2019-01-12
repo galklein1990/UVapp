@@ -156,5 +156,6 @@ D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\obj\Debug\81\android\assets\Sys
 D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\obj\Debug\81\android\assets\System.Web.Services.pdb
 D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\obj\Debug\81\android\assets\System.Xml.Linq.pdb
 D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\obj\Debug\81\android\assets\System.Xml.pdb
+D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\obj\Debug\81\res\values\style.xml
 D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\bin\Debug\UVapp.dll
 D:\Academic\TAU\Environments\eHealth\UVapp\UVapp\obj\Debug\81\linksrc\UVapp.dll.mdb
