@@ -44,14 +44,14 @@ namespace UVapp
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f050005
-			public const int appExposureTimeText = 2131034117;
+			// aapt resource value: 0x7f050006
+			public const int appExposureTimeText = 2131034118;
 			
 			// aapt resource value: 0x7f050001
 			public const int bandConnectionText = 2131034113;
 			
-			// aapt resource value: 0x7f050006
-			public const int bandExposureTimeText = 2131034118;
+			// aapt resource value: 0x7f050007
+			public const int bandExposureTimeText = 2131034119;
 			
 			// aapt resource value: 0x7f050000
 			public const int connectbtn = 2131034112;
@@ -59,23 +59,29 @@ namespace UVapp
 			// aapt resource value: 0x7f050002
 			public const int currentUVText = 2131034114;
 			
+			// aapt resource value: 0x7f050003
+			public const int currentUVWeatherText = 2131034115;
+			
+			// aapt resource value: 0x7f05000b
+			public const int currentlySamplingText = 2131034123;
+			
+			// aapt resource value: 0x7f05000c
+			public const int gettingUvFromWeatherText = 2131034124;
+			
 			// aapt resource value: 0x7f05000a
-			public const int currentlySamplingText = 2131034122;
-			
-			// aapt resource value: 0x7f050009
-			public const int samplingIntervalText = 2131034121;
-			
-			// aapt resource value: 0x7f050007
-			public const int skinColorText = 2131034119;
+			public const int samplingIntervalText = 2131034122;
 			
 			// aapt resource value: 0x7f050008
-			public const int timeYouCanSpendText = 2131034120;
+			public const int skinColorText = 2131034120;
+			
+			// aapt resource value: 0x7f050009
+			public const int timeYouCanSpendText = 2131034121;
+			
+			// aapt resource value: 0x7f050005
+			public const int uvMinutesLeftText = 2131034117;
 			
 			// aapt resource value: 0x7f050004
-			public const int uvMinutesLeftText = 2131034116;
-			
-			// aapt resource value: 0x7f050003
-			public const int uvMinutesText = 2131034115;
+			public const int uvMinutesText = 2131034116;
 			
 			static Id()
 			{

@@ -24,14 +24,16 @@ namespace UVapp
         private IBandClient bandClient;
         private IBandConnectionCallback bandConnCallback;   // band connection "event listener"
 
-        TextView currUVText, bandConnText, uvMinutesText, samplingIntervalText, currentlySamplingText;
-        TextView appExposureTimeText, bandExposureTimeText, skinColorText, timeYouCanSpendText, uvMinutesLeftText; 
+        TextView currUVText, currUVWeatherText, bandConnText, uvMinutesText, samplingIntervalText, currentlySamplingText;
+        TextView appExposureTimeText, bandExposureTimeText, skinColorText, timeYouCanSpendText, uvMinutesLeftText, gettingUvWeatherText; 
         Random rnd = new Random();
         
         Button connectBandButton;
 
         int currentUV;
+        double weatherCurrentUV;
         double samplingIntervalMinutes = 1;
+        double weatherRequestIntervalMinutes = 30;  // It's actually limited to 60 requests per minute
         double uvMinutesSpent = 0;
         double uvMinutesLeft;
         long exposureMinutesApp;    // The exposure minutes we measure
@@ -41,14 +43,20 @@ namespace UVapp
 
         UVSensor uvSensor;
 
-        Timer uvMeasureTimer;
+        Timer uvWeatherTimer;
+        Timer uvSampleTimer;
         DateTime lastUvSampleTime;
         bool connLostSinceLastSample = true;
+
+        // Where I spend all my time
+        readonly double defaultLatitude = 32.1148223;
+        readonly double defaultLongitude = 34.8070341;
 
         // Constant strings that don't need to be retyped
         readonly string bandConnTextBase = "Band Connection: ";
         readonly string samplingIntervalTextBase = "Sampling interval: ";
         readonly string currUVTextBase = "Current UV: ";
+        readonly string currUVWeatherTextBase = "Current UV Weather: ";
         readonly string uvMinutesTextBase = "UV Minutes Spent: ";
         readonly string skinColorTextBase = "Your skin type: ";
         readonly string appExposureTimeTextBase = "App measured exposure mins: ";
@@ -64,6 +72,7 @@ namespace UVapp
             SetContentView(Resource.Layout.Main);
             bandConnText = FindViewById<TextView>(Resource.Id.bandConnectionText);
             currUVText = FindViewById<TextView>(Resource.Id.currentUVText);
+            currUVWeatherText = FindViewById<TextView>(Resource.Id.currentUVWeatherText);
             uvMinutesText = FindViewById<TextView>(Resource.Id.uvMinutesText);
             samplingIntervalText = FindViewById<TextView>(Resource.Id.samplingIntervalText);
             currentlySamplingText = FindViewById<TextView>(Resource.Id.currentlySamplingText);
@@ -72,28 +81,61 @@ namespace UVapp
             skinColorText = FindViewById<TextView>(Resource.Id.skinColorText);
             timeYouCanSpendText = FindViewById<TextView>(Resource.Id.timeYouCanSpendText);
             uvMinutesLeftText = FindViewById<TextView>(Resource.Id.uvMinutesLeftText);
+            gettingUvWeatherText = FindViewById<TextView>(Resource.Id.gettingUvFromWeatherText);
 
             connectBandButton = FindViewById<Button>(Resource.Id.connectbtn);
 
             connectBandButton.Click += connectBandClick;
 
-            uvMeasureTimer = new Timer(1000);   // Initial interval is 1 second and it is changed after first sample
-            uvMeasureTimer.Elapsed += async (sender, args) =>
+            uvSampleTimer = new Timer(1000);   // Initial interval is 1 second and it is changed after first sample
+            uvSampleTimer.Elapsed += async (sender, args) =>
             {
                 RunOnUiThread(() => {      // To access the text, you need to run on ui thread
                     currentlySamplingText.Text = "Sampling UV...";
                 });
-                uvMeasureTimer.Interval = MinutesToMS(samplingIntervalMinutes);
+                uvSampleTimer.Interval = MinutesToMS(samplingIntervalMinutes);
                 await sampleBandUV();
             };
-            uvMeasureTimer.AutoReset = true;
-            uvMeasureTimer.Enabled = false; // Will only be enabled when the band connects
+            uvSampleTimer.AutoReset = true;
+            uvSampleTimer.Enabled = false; // Will only be enabled when the band connects
+
+            uvWeatherTimer = new Timer(1000);     // Initial interval is 1 second and it is changed after first request
+            uvWeatherTimer.Elapsed += async (sender, args) =>
+            {
+                uvWeatherTimer.Interval = MinutesToMS(weatherRequestIntervalMinutes);
+                if (httpClient == null)
+                {
+                    httpClient = new HttpClient();
+                }
+
+                RunOnUiThread(() =>
+                {
+                    gettingUvWeatherText.Text = "Getting UV from weather...";
+                });
+                weatherCurrentUV = await WeatherUV.GetWeatherUvAsync(httpClient, defaultLatitude, defaultLongitude);
+
+                RunOnUiThread(() =>
+                {
+                    gettingUvWeatherText.Text = "";
+                    currUVWeatherText.Text = currUVWeatherTextBase + weatherCurrentUV;
+                });
+            };
+            uvWeatherTimer.AutoReset = true;
+            uvWeatherTimer.Enabled = true;
 
             lastUvSampleTime = DateTime.MinValue;
-            uvMinutesLeft = userSkinType.UVMinutesToBurn();
+            if (savedInstanceState == null)
+            {
+                uvMinutesLeft = userSkinType.UVMinutesToBurn();
+            }
+            else
+            {
+                uvMinutesLeft = savedInstanceState.GetDouble("uvMinutesLeft", userSkinType.UVMinutesToBurn());
+            }
 
             samplingIntervalText.Text = $"Sampling interval: {samplingIntervalMinutes} minutes";
             currUVText.Text = "";
+            currUVWeatherText.Text = "";
             bandConnText.Text = "";
             uvMinutesText.Text = $"UV minutes spent: {(int)uvMinutesSpent}";
             currentlySamplingText.Text = "";
@@ -102,6 +144,7 @@ namespace UVapp
             appExposureTimeText.Text = appExposureTimeTextBase + 0;
             bandExposureTimeText.Text = "";
             uvMinutesLeftText.Text = uvMinutesLeftTextBase + (int)uvMinutesLeft;
+            gettingUvWeatherText.Text = "";
         }
 
         protected override void OnSaveInstanceState(Bundle outState)
@@ -160,12 +203,12 @@ namespace UVapp
                     if (connectionState == ConnectionState.Connected)
                     {
                         //await measureUV();
-                        uvMeasureTimer.Start();
+                        uvSampleTimer.Start();
                     }
                     else
                     {
                         connLostSinceLastSample = true;
-                        uvMeasureTimer.Stop();
+                        uvSampleTimer.Stop();
                     }
                 });
 

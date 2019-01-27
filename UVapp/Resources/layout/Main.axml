@@ -35,6 +35,15 @@
 		android:layout_marginRight="20sp"
 		android:id="@+id/currentUVText" />
 	<TextView
+		android:text="currentUVWeatherText"
+		android:textSize="20sp"
+		android:textColor="@android:color/black"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="20sp"
+		android:layout_marginRight="20sp"
+		android:id="@+id/currentUVWeatherText" />
+	<TextView
 		android:text="uvMinutesText"
 		android:textSize="20sp"
 		android:textColor="@android:color/black"
@@ -106,5 +115,15 @@
 		android:layout_marginLeft="20sp"
 		android:layout_marginRight="20sp"
 		android:id="@+id/currentlySamplingText" />
+	<TextView
+		android:text="gettingUVfromWeatherText"
+		android:textSize="20sp"
+		android:textColor="@android:color/black"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="20sp"
+		android:layout_marginRight="20sp"
+		android:id="@+id/gettingUvFromWeatherText" />
+
 
 </LinearLayout>
