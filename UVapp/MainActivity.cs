@@ -25,22 +25,36 @@ namespace UVapp
         private IBandConnectionCallback bandConnCallback;   // band connection "event listener"
 
         TextView currUVText, bandConnText, uvMinutesText, samplingIntervalText, currentlySamplingText;
+        TextView appExposureTimeText, bandExposureTimeText, skinColorText, timeYouCanSpendText, uvMinutesLeftText; 
         Random rnd = new Random();
-        long currentUV;
+        
         Button connectBandButton;
+
+        int currentUV;
         double samplingIntervalMinutes = 1;
         double uvMinutesSpent = 0;
+        double uvMinutesLeft;
+        long exposureMinutesApp;    // The exposure minutes we measure
+        long exposureMinutesBand;   // The exposure minutes the band measures
+
+        SkinType userSkinType = SkinType.Fitz2;
 
         UVSensor uvSensor;
 
         Timer uvMeasureTimer;
+        DateTime lastUvSampleTime;
+        bool connLostSinceLastSample = true;
 
         // Constant strings that don't need to be retyped
-        string bandConnTextBase = "Band Connection: ";
-        string samplingIntervalTextBase = "Sampling interval: ";
-        string currUVTextBase = "Current UV: ";
-        string uvMinutesTextBase = "UV Minutes Spent: ";
-
+        readonly string bandConnTextBase = "Band Connection: ";
+        readonly string samplingIntervalTextBase = "Sampling interval: ";
+        readonly string currUVTextBase = "Current UV: ";
+        readonly string uvMinutesTextBase = "UV Minutes Spent: ";
+        readonly string skinColorTextBase = "Your skin type: ";
+        readonly string appExposureTimeTextBase = "App measured exposure mins: ";
+        readonly string bandExposureTimeTextBase = "Band measured exposure mins: ";
+        readonly string timeYouCanSpendTextBase = "Minutes you can spend under current exposure: ";
+        readonly string uvMinutesLeftTextBase = "UV Minutes Left: ";
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -53,28 +67,63 @@ namespace UVapp
             uvMinutesText = FindViewById<TextView>(Resource.Id.uvMinutesText);
             samplingIntervalText = FindViewById<TextView>(Resource.Id.samplingIntervalText);
             currentlySamplingText = FindViewById<TextView>(Resource.Id.currentlySamplingText);
+            appExposureTimeText = FindViewById<TextView>(Resource.Id.appExposureTimeText);
+            bandExposureTimeText = FindViewById<TextView>(Resource.Id.bandExposureTimeText);
+            skinColorText = FindViewById<TextView>(Resource.Id.skinColorText);
+            timeYouCanSpendText = FindViewById<TextView>(Resource.Id.timeYouCanSpendText);
+            uvMinutesLeftText = FindViewById<TextView>(Resource.Id.uvMinutesLeftText);
 
             connectBandButton = FindViewById<Button>(Resource.Id.connectbtn);
 
             connectBandButton.Click += connectBandClick;
 
-            uvMeasureTimer = new Timer(1000);
+            uvMeasureTimer = new Timer(1000);   // Initial interval is 1 second and it is changed after first sample
             uvMeasureTimer.Elapsed += async (sender, args) =>
             {
                 RunOnUiThread(() => {      // To access the text, you need to run on ui thread
                     currentlySamplingText.Text = "Sampling UV...";
                 });
                 uvMeasureTimer.Interval = MinutesToMS(samplingIntervalMinutes);
-                await measureUV();
+                await sampleBandUV();
             };
             uvMeasureTimer.AutoReset = true;
             uvMeasureTimer.Enabled = false; // Will only be enabled when the band connects
 
-            samplingIntervalText.Text = $"Current sampling interval: {samplingIntervalMinutes} minutes";
+            lastUvSampleTime = DateTime.MinValue;
+            uvMinutesLeft = userSkinType.UVMinutesToBurn();
+
+            samplingIntervalText.Text = $"Sampling interval: {samplingIntervalMinutes} minutes";
             currUVText.Text = "";
             bandConnText.Text = "";
             uvMinutesText.Text = $"UV minutes spent: {(int)uvMinutesSpent}";
             currentlySamplingText.Text = "";
+            skinColorText.Text = skinColorTextBase + userSkinType.ToString();
+            timeYouCanSpendText.Text = timeYouCanSpendTextBase + "safe";
+            appExposureTimeText.Text = appExposureTimeTextBase + 0;
+            bandExposureTimeText.Text = "";
+            uvMinutesLeftText.Text = uvMinutesLeftTextBase + (int)uvMinutesLeft;
+        }
+
+        protected override void OnSaveInstanceState(Bundle outState)
+        {
+            base.OnSaveInstanceState(outState);
+
+            outState.PutInt("currentUV", currentUV);
+            outState.PutDouble("uvMinutesSpent", uvMinutesSpent);
+            outState.PutDouble("uvMinutesLeft", uvMinutesLeft);
+            outState.PutLong("exposureMinutesApp", exposureMinutesApp);
+            outState.PutLong("exposureMinutesBand", exposureMinutesBand);
+        }
+
+        protected override void OnRestoreInstanceState(Bundle savedInstanceState)
+        {
+            base.OnRestoreInstanceState(savedInstanceState);
+
+            currentUV = savedInstanceState.GetInt("currentUV");
+            uvMinutesSpent = savedInstanceState.GetDouble("uvMinutesSpent");
+            uvMinutesLeft = savedInstanceState.GetDouble("uvMinutesLeft");
+            exposureMinutesApp = savedInstanceState.GetLong("exposureMinutesApp");
+            exposureMinutesBand = savedInstanceState.GetLong("exposureMinutesBand");
         }
 
         private async void connectBandClick(object sender, System.EventArgs e)
@@ -115,6 +164,7 @@ namespace UVapp
                     }
                     else
                     {
+                        connLostSinceLastSample = true;
                         uvMeasureTimer.Stop();
                     }
                 });
@@ -134,7 +184,7 @@ namespace UVapp
             } 
         }
 
-        private async Task measureUV()
+        private async Task sampleBandUV()
         {
             try
             {
@@ -151,15 +201,47 @@ namespace UVapp
 
                 uvSensor.ReadingChanged += (o, args) =>
                 {
-
+                    
                     uviDescription = args.SensorReading.UVIndexLevel;
-                    long uviNum = args.SensorReading.UVExposureToday;
-                    uvMinutesSpent += currentUV*(samplingIntervalMinutes);
+                    int uviNum = UVvalues.UvEnumToInt(uviDescription);
+
+                    long prevExposureMinutes = exposureMinutesBand;
+                    exposureMinutesBand = args.SensorReading.UVExposureToday;
+                    long exposureInterval = exposureMinutesBand - prevExposureMinutes;
+
+                    // currentUV was still not updated, the UV from the previous sample is used
+                    if (!connLostSinceLastSample)
+                    {
+                        TimeSpan timeSinceLastSample = DateTime.Now - lastUvSampleTime;
+                        
+                        if (currentUV != 0)
+                            exposureMinutesApp += (long)timeSinceLastSample.TotalMinutes;
+                        
+                    }
+
+                    uvMinutesSpent += currentUV * exposureInterval;
+                    uvMinutesLeft -= currentUV * exposureInterval;
                     currentUV = uviNum;
+                    connLostSinceLastSample = false;
+                    lastUvSampleTime = DateTime.Now;
 
                     RunOnUiThread(() => {      // To access the text, you need to run on ui thread
                         currUVText.Text = currUVTextBase + $"{currentUV} ({uviDescription})";
                         uvMinutesText.Text = uvMinutesTextBase + uvMinutesSpent;
+                        uvMinutesLeftText.Text = uvMinutesLeftTextBase + (int)uvMinutesLeft;
+
+                        if (currentUV != 0)
+                        {
+                            timeYouCanSpendText.Text = timeYouCanSpendTextBase + (int)uvMinutesLeft / currentUV;
+                        }
+                        else
+                        {
+                            timeYouCanSpendText.Text = timeYouCanSpendTextBase + "Safe";
+                        }
+
+                        appExposureTimeText.Text = appExposureTimeTextBase + exposureMinutesApp;
+                        bandExposureTimeText.Text = bandExposureTimeTextBase + exposureMinutesBand;
+
                         currentlySamplingText.Text = "";
                     });
                 };

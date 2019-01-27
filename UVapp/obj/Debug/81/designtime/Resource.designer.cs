@@ -31,20 +31,35 @@ namespace UVapp
 		public partial class Id
 		{
 			
+			// aapt resource value: 0x7F010007
+			public const int appExposureTimeText = 2130771975;
+			
 			// aapt resource value: 0x7F010003
 			public const int bandConnectionText = 2130771971;
+			
+			// aapt resource value: 0x7F010008
+			public const int bandExposureTimeText = 2130771976;
 			
 			// aapt resource value: 0x7F010002
 			public const int connectbtn = 2130771970;
 			
-			// aapt resource value: 0x7F010007
-			public const int currentlySamplingText = 2130771975;
+			// aapt resource value: 0x7F010012
+			public const int currentlySamplingText = 2130771986;
 			
 			// aapt resource value: 0x7F010004
 			public const int currentUVText = 2130771972;
 			
+			// aapt resource value: 0x7F010011
+			public const int samplingIntervalText = 2130771985;
+			
+			// aapt resource value: 0x7F010009
+			public const int skinColorText = 2130771977;
+			
+			// aapt resource value: 0x7F010010
+			public const int timeYouCanSpendText = 2130771984;
+			
 			// aapt resource value: 0x7F010006
-			public const int samplingIntervalText = 2130771974;
+			public const int uvMinutesLeftText = 2130771974;
 			
 			// aapt resource value: 0x7F010005
 			public const int uvMinutesText = 2130771973;

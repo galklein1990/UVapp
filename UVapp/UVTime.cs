@@ -10,10 +10,13 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
+using Microsoft.Band.Sensors;   // For UVI
+
 namespace UVapp
 {
-    public class UVTime
+    public class UVvalues
     {
+        /*
         private double UVMinutesLeft;
         public UVTime(SkinType skinType)
         {
@@ -29,8 +32,83 @@ namespace UVapp
         {
             return UVMinutesLeft;
         }
-    }
+        */
 
+
+        /* UV descriptions according to https://www.epa.gov/sunsafety/uv-index-scale-1
+         */
+
+        public static UVIndexLevel UvIntToEnum(int uv)
+        {
+            UVIndexLevel res = null;
+
+            switch (uv)
+            {
+                case 0:
+                    res = UVIndexLevel.None;
+                    break;
+                case 1:
+                case 2:
+                    res = UVIndexLevel.Low;
+                    break;
+                case 3:
+                case 4:
+                case 5:
+                    res = UVIndexLevel.Medium;
+                    break;
+                case 6:
+                case 7:
+                    res = UVIndexLevel.High;
+                    break;
+                default:
+                    if (uv >= 8)
+                        res = UVIndexLevel.VeryHigh;
+                    break;
+            }
+
+            return res;
+        }
+
+        public static int UvEnumToInt(UVIndexLevel uvEnum)
+        {
+            return UvEnumToIntUpper(uvEnum);
+        }
+
+        public static int UvEnumToIntLower(UVIndexLevel uvEnum)
+        {
+            if (uvEnum == UVIndexLevel.None)
+                return 0;
+            else if (uvEnum == UVIndexLevel.Low)
+                return 1;
+            else if (uvEnum == UVIndexLevel.Medium)
+                return 3;
+            else if (uvEnum == UVIndexLevel.High)
+                return 6;
+            else if (uvEnum == UVIndexLevel.VeryHigh)
+                return 8;
+
+            return -1;
+        }
+
+        public static int UvEnumToIntUpper(UVIndexLevel uvEnum)
+        {
+            if (uvEnum == UVIndexLevel.None)
+                return 0;
+            else if (uvEnum == UVIndexLevel.Low)
+                return 2;
+            else if (uvEnum == UVIndexLevel.Medium)
+                return 5;
+            else if (uvEnum == UVIndexLevel.High)
+                return 7;
+            else if (uvEnum == UVIndexLevel.VeryHigh)
+                return 10;
+
+            return -1;
+        }
+
+
+
+    }
     // The 6 Fitzpatrick skin types
     public enum SkinType
     {
@@ -131,6 +209,4 @@ namespace UVapp
             }
         }
     }
-
-
 }
