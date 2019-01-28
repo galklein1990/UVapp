@@ -1,4 +1,5 @@
 ﻿using Android.App;
+using Android.Content;
 
 using Android.Widget;
 using Android.OS;
@@ -10,6 +11,9 @@ using System.Timers;
 using Microsoft.Band;
 using Microsoft.Band.Sensors;
 
+using Android.Support.V4.App;
+using TaskStackBuilder = Android.Support.V4.App.TaskStackBuilder;
+
 
 [assembly: UsesPermission(Android.Manifest.Permission.Bluetooth)]
 [assembly: UsesPermission(Microsoft.Band.BandClientManager.BindBandService)]
@@ -19,6 +23,12 @@ namespace UVapp
     [Activity(Label = "UVapp", MainLauncher = true)]
     public class MainActivity : Activity
     {
+
+        public static readonly string CHANNEL_ID = "notificationChannel1";
+        internal static readonly string Key = "update";
+        internal static string UVKey = "-1";
+       // public string update = "uv detected";
+
 
         private HttpClient httpClient;
         private IBandClient bandClient;
@@ -85,7 +95,7 @@ namespace UVapp
 
             connectBandButton = FindViewById<Button>(Resource.Id.connectbtn);
 
-            connectBandButton.Click += connectBandClick;
+            connectBandButton.Click += ConnectBandClick;
 
             uvSampleTimer = new Timer(1000);   // Initial interval is 1 second and it is changed after first sample
             uvSampleTimer.Elapsed += async (sender, args) =>
@@ -94,7 +104,7 @@ namespace UVapp
                     currentlySamplingText.Text = "Sampling UV...";
                 });
                 uvSampleTimer.Interval = MinutesToMS(samplingIntervalMinutes);
-                await sampleBandUV();
+                await SampleBandUV();
             };
             uvSampleTimer.AutoReset = true;
             uvSampleTimer.Enabled = false; // Will only be enabled when the band connects
@@ -169,7 +179,7 @@ namespace UVapp
             exposureMinutesBand = savedInstanceState.GetLong("exposureMinutesBand");
         }
 
-        private async void connectBandClick(object sender, System.EventArgs e)
+        private async void ConnectBandClick(object sender, System.EventArgs e)
         {
            
             IBandInfo[] pairedBands = BandClientManager.Instance.GetPairedBands();
@@ -227,7 +237,7 @@ namespace UVapp
             } 
         }
 
-        private async Task sampleBandUV()
+        private async Task SampleBandUV()
         {
             try
             {
@@ -281,6 +291,10 @@ namespace UVapp
                     connLostSinceLastSample = false;
                     lastUvSampleTime = DateTime.Now;
 
+                    if (currentUV >= 0) {
+                        NotifyUser("new uv sample");
+                    }
+
                     RunOnUiThread(() => {      // To access the text, you need to run on ui thread
                         currUVText.Text = currUVTextBase + $"{currentUV} ({uviDescription})";
                         uvMinutesText.Text = uvMinutesTextBase + uvMinutesSpent;
@@ -288,6 +302,7 @@ namespace UVapp
 
                         if (currentUV != 0)
                         {
+
                             timeYouCanSpendText.Text = timeYouCanSpendTextBase + (int)uvMinutesLeft / currentUV;
                         }
                         else
@@ -361,7 +376,7 @@ namespace UVapp
         }
         */
 
-        private async Task<string> getEnumUVRecommendation(UVIndexLevel uvi)
+        private async Task<string> GetEnumUVRecommendation(UVIndexLevel uvi)
         {
             if (httpClient == null)
             {
@@ -371,12 +386,12 @@ namespace UVapp
         }
 
        
-        private string getIntUVRecommendation(int uv)
+        private string GetIntUVRecommendation(int uv)
         {
             return ClientRecommendations.getIntUVRecommendation(uv);
         }
         
-        public static string formatTimeAmountForUser(double minutes)
+        public static string FormatTimeAmountForUser(double minutes)
         {
             if (minutes < 120)
             {
@@ -391,9 +406,43 @@ namespace UVapp
         {
             return 60 * 1000 * minutes;
         }
-        double msToMinutes(double milliseconds)
+        double MsToMinutes(double milliseconds)
         {
             return milliseconds / (60 * 1000);
+        }
+
+        //////////////////////NOTIFICATIONS/////////////////////
+        private void CreateNotificationChannel()
+        {
+            if (Build.VERSION.SdkInt < BuildVersionCodes.O)
+            {
+                // Notification channels are new in API 26 (and not a part of the
+                // support library). There is no need to create a notification
+                // channel on older versions of Android.
+                return;
+            }
+
+            var name = Resources.GetString(Resource.String.channel_name);
+            var description = GetString(Resource.String.channel_describtion);
+            var channel = new NotificationChannel(CHANNEL_ID, name, NotificationImportance.Default)
+            {
+                Description = description
+            };
+
+            var notificationManager = (NotificationManager)GetSystemService(NotificationService);
+            notificationManager.CreateNotificationChannel(channel);
+        }
+
+
+
+        void NotifyUser(string update)
+        {
+
+            Intent notifyIntent = new Intent(this, typeof(NotificationService));
+            notifyIntent.PutExtra("update" , update);
+            this.StartService(notifyIntent);
+
+
         }
     }
 }
