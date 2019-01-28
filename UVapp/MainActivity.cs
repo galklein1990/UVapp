@@ -61,7 +61,7 @@ namespace UVapp
         readonly string skinColorTextBase = "Your skin type: ";
         readonly string appExposureTimeTextBase = "App measured exposure mins: ";
         readonly string bandExposureTimeTextBase = "Band measured exposure mins: ";
-        readonly string timeYouCanSpendTextBase = "Minutes you can spend under current exposure: ";
+        readonly string timeYouCanSpendTextBase = "Additional minutes you can spend under current exposure: ";
         readonly string uvMinutesLeftTextBase = "UV Minutes Left: ";
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -250,7 +250,7 @@ namespace UVapp
 
                     long prevExposureMinutes = exposureMinutesBand;
                     exposureMinutesBand = args.SensorReading.UVExposureToday;
-                    long exposureInterval = exposureMinutesBand - prevExposureMinutes;
+                    long exposureSinceLastSample = exposureMinutesBand - prevExposureMinutes;
 
                     // currentUV was still not updated, the UV from the previous sample is used
                     if (!connLostSinceLastSample)
@@ -262,8 +262,21 @@ namespace UVapp
                         
                     }
 
-                    uvMinutesSpent += currentUV * exposureInterval;
-                    uvMinutesLeft -= currentUV * exposureInterval;
+                    if (currentUV != 0)
+                    {
+                        uvMinutesSpent += currentUV * exposureSinceLastSample;
+                        uvMinutesLeft -= currentUV * exposureSinceLastSample;
+                    }
+                    else
+                    {
+                        /* If the last uv sample was 0, we use the weather UV
+                         * Note that exposureSinceLastSample may be 0 if there
+                         * was no exposure
+                         */
+                        uvMinutesSpent += weatherCurrentUV * exposureSinceLastSample;
+                        uvMinutesLeft -= weatherCurrentUV * exposureSinceLastSample;
+                    }
+
                     currentUV = uviNum;
                     connLostSinceLastSample = false;
                     lastUvSampleTime = DateTime.Now;
@@ -363,7 +376,17 @@ namespace UVapp
             return ClientRecommendations.getIntUVRecommendation(uv);
         }
         
-
+        public static string formatTimeAmountForUser(double minutes)
+        {
+            if (minutes < 120)
+            {
+                return $"{(int)minutes} minutes";
+            }
+            else
+            {
+                return $"{(int)(minutes / 60)} hours and {((int)minutes)%60} minutes";
+            }
+        }
         double MinutesToMS(double minutes)
         {
             return 60 * 1000 * minutes;
