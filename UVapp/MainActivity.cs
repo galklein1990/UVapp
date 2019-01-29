@@ -30,8 +30,6 @@ namespace UVapp
         // public string update = "uv detected";
 
         public static bool loggedIn = false; //should be replaced with a function -getter- from cloud
-       
-
 
         private HttpClient httpClient;
         private IBandClient bandClient;
@@ -42,6 +40,9 @@ namespace UVapp
         Random rnd = new Random();
         
         Button connectBandButton;
+
+        bool firstExposureNotificationSent = false;
+        bool halfAllowedUVnotificationSent = false;
 
         int currentUV;
         double weatherCurrentUV;
@@ -74,7 +75,7 @@ namespace UVapp
         readonly string skinColorTextBase = "Your skin type: ";
         readonly string appExposureTimeTextBase = "App measured exposure mins: ";
         readonly string bandExposureTimeTextBase = "Exposure time today: ";
-        readonly string timeYouCanSpendTextBase = "Additional minutes you can spend under current exposure: ";
+        readonly string timeYouCanSpendTextBase = "Additional time you can spend under current level: ";
         readonly string uvMinutesLeftTextBase = "UV Minutes Left: ";
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -137,7 +138,7 @@ namespace UVapp
                 RunOnUiThread(() =>
                 {
                     gettingUvWeatherText.Text = "";
-                    currUVWeatherText.Text = currUVWeatherTextBase + weatherCurrentUV;
+                    currUVWeatherText.Text = currUVWeatherTextBase + (int)weatherCurrentUV;
                 });
             };
             uvWeatherTimer.AutoReset = true;
@@ -160,10 +161,10 @@ namespace UVapp
             uvMinutesText.Text = uvMinutesTextBase + $"{(int)uvMinutesSpent} ({(int)(uvMinutesSpent/userSkinType.UVMinutesToBurn())}%)";
             currentlySamplingText.Text = "";
             skinColorText.Text = skinColorTextBase + userSkinType.RomanNumeralsName();
-            timeYouCanSpendText.Text = timeYouCanSpendTextBase + "safe";
+            timeYouCanSpendText.Text = timeYouCanSpendTextBase + "Safe";
             appExposureTimeText.Text = ""; //appExposureTimeTextBase + 0;
             bandExposureTimeText.Text = "";
-            uvMinutesLeftText.Text = uvMinutesLeftTextBase + (int)uvMinutesLeft;
+            uvMinutesLeftText.Text = ""; //uvMinutesLeftTextBase + (int)uvMinutesLeft;
             gettingUvWeatherText.Text = "";
         }
 
@@ -228,6 +229,12 @@ namespace UVapp
                     else
                     {
                         connLostSinceLastSample = true;
+
+                        RunOnUiThread(() =>
+                        {
+                            currentlySamplingText.Text = "";
+                        });
+                        
                         uvSampleTimer.Stop();
                     }
                 });
@@ -301,19 +308,26 @@ namespace UVapp
                     connLostSinceLastSample = false;
                     lastUvSampleTime = DateTime.Now;
 
-                    if (currentUV > 0) {
-                        NotifyUser("UV detected!");
+                    if (currentUV > 0 && !firstExposureNotificationSent) {
+                        NotifyUser($"UV level of {currentUV} detected!", $"If you are going to be exposed to the sun for more than {FormatTimeAmountForUser(userSkinType.MinutesToBurn(currentUV))}, wear protective clothing, hat and UV-blocking sunglasses and apply SPF 30+ sunscreen");
+                        firstExposureNotificationSent = true;
+                    }
+
+                    if (uvMinutesLeft < userSkinType.UVMinutesToBurn()/2)
+                    {
+                        NotifyUser("You've been exposed to over 50% of your allowed UV today!", $"Try to avoid additional sun exposure and make sure to apply SPF 30+ sunscreen and wear protective clothing, especially if you are going to be exposed for more than { FormatTimeAmountForUser(uvMinutesLeft / currentUV)}");
+                        halfAllowedUVnotificationSent = true;
                     }
 
                     RunOnUiThread(() => {      // To access the text, you need to run on ui thread
                         currUVText.Text = currUVTextBase + $"{currentUV} ({uviDescription})";
-                        uvMinutesText.Text = uvMinutesTextBase + $"{(int)uvMinutesSpent} ({(int)(uvMinutesSpent / userSkinType.UVMinutesToBurn())}%)";
+                        uvMinutesText.Text = uvMinutesTextBase + $"{(int)uvMinutesSpent} ({(int)(uvMinutesSpent*100 / userSkinType.UVMinutesToBurn())}%)";
                         //uvMinutesLeftText.Text = uvMinutesLeftTextBase + (int)uvMinutesLeft;
 
                         if (currentUV != 0)
                         {
 
-                            timeYouCanSpendText.Text = timeYouCanSpendTextBase + (int)uvMinutesLeft / currentUV;
+                            timeYouCanSpendText.Text = timeYouCanSpendTextBase + FormatTimeAmountForUser(uvMinutesLeft / currentUV);
                         }
                         else
                         {
@@ -321,7 +335,7 @@ namespace UVapp
                         }
 
                         //appExposureTimeText.Text = appExposureTimeTextBase + exposureMinutesApp;
-                        bandExposureTimeText.Text = bandExposureTimeTextBase + exposureMinutesBand;
+                        bandExposureTimeText.Text = bandExposureTimeTextBase + FormatTimeAmountForUser(exposureMinutesBand);
 
                         currentlySamplingText.Text = "";
                     });
@@ -445,13 +459,13 @@ namespace UVapp
 
 
 
-        void NotifyUser(string update)
+        void NotifyUser(string title, string update)
         {
 
             Intent notifyIntent = new Intent(this, typeof(NotificationService));
             notifyIntent.PutExtra("update" , update);
+            notifyIntent.PutExtra("title", title);
             this.StartService(notifyIntent);
-
 
         }
     }

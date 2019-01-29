@@ -36,15 +36,22 @@ namespace UVapp
         public override StartCommandResult OnStartCommand(Intent intent, [GeneratedEnum] StartCommandFlags flags, int startId)
         {
             string update = intent.GetStringExtra("update");
+            string title = intent.GetStringExtra("title");
+
+            NotificationCompat.BigTextStyle textStyle = new NotificationCompat.BigTextStyle();
+            textStyle.BigText(update);
+
             Intent Nintent = new Intent(this, typeof(MainActivity));
             PendingIntent Pintent = PendingIntent.GetService(this, 0, Nintent, PendingIntentFlags.UpdateCurrent);
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this, MainActivity.CHANNEL_ID)
-                .SetContentTitle("UV update")
-                .SetContentText(update)
+                .SetContentTitle(title)
                 .SetContentIntent(Pintent)
+                .SetDefaults((int)NotificationDefaults.Sound | (int)NotificationDefaults.Vibrate)
+                .SetStyle(textStyle)
                 .SetSmallIcon(Resource.Drawable.notification_bg);
-    
+
+
             Notification n = builder.Build();
             n.Flags =  NotificationFlags.AutoCancel | NotificationFlags.ForegroundService;
             this.StartForeground(1, n);
