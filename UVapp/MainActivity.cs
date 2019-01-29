@@ -27,7 +27,10 @@ namespace UVapp
         public static readonly string CHANNEL_ID = "notificationChannel1";
         internal static readonly string Key = "update";
         internal static string UVKey = "-1";
-       // public string update = "uv detected";
+        // public string update = "uv detected";
+
+        public static bool loggedIn = false; //should be replaced with a function -getter- from cloud
+       
 
 
         private HttpClient httpClient;
@@ -80,6 +83,13 @@ namespace UVapp
 
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Main);
+
+
+            //login
+            if (!loggedIn) {
+                Intent loginIntent = new Intent(this, typeof(Login_activity));
+                StartActivity(loginIntent);
+            }
             bandConnText = FindViewById<TextView>(Resource.Id.bandConnectionText);
             currUVText = FindViewById<TextView>(Resource.Id.currentUVText);
             currUVWeatherText = FindViewById<TextView>(Resource.Id.currentUVWeatherText);

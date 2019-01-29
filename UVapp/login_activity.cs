@@ -1,0 +1,70 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+using Android.App;
+using Android.Content;
+using Android.OS;
+using Android.Runtime;
+using Android.Views;
+using Android.Widget;
+using Android.Content;
+
+namespace UVapp
+{
+    
+    [Activity(Label = "Login_activity")]
+    public class Login_activity : Activity 
+    {
+        EditText username;
+        EditText password;
+        TextView txt;
+        Button loginBtn, addUserBtn;
+        protected override void OnCreate(Bundle savedInstanceState)
+        {
+            base.OnCreate(savedInstanceState);
+
+            SetContentView(Resource.Layout.loginLayout);
+            loginBtn = FindViewById<Button>(Resource.Id.loginButton);
+            username = FindViewById<EditText>(Resource.Id.username);
+            password = FindViewById<EditText>(Resource.Id.password);
+            txt = FindViewById<TextView>(Resource.Id.logintxt);
+            loginBtn.Click += LoginFunction;
+            addUserBtn = FindViewById<Button>(Resource.Id.createButton);
+            addUserBtn.Click += AddUserFunction;
+        }
+
+        public void LoginFunction(object sender, System.EventArgs e)
+        {
+            //call cloud fuction to check if user is in database that returns a number describing a situation 
+            int res = 0;
+            switch (res) {
+                case 0:
+                    txt.Text = "login successful";
+                    Intent mainIntent = new Intent(this, typeof(MainActivity));
+                    mainIntent.PutExtra("name", username.Text);
+                    MainActivity.loggedIn = true;
+                    StartActivity(mainIntent);
+                    break;
+                case 1:
+                    txt.Text = "username or password incorrect , please try again";
+                    password.Text = "";
+                    username.Text = "";
+                    break;
+                default: break;
+            }
+     
+        return;
+        }
+
+        public void AddUserFunction(object sender, System.EventArgs e) {
+            return;
+        }
+    }
+
+
+
+   
+
+}
