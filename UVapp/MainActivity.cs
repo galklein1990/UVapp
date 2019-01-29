@@ -68,12 +68,12 @@ namespace UVapp
         // Constant strings that don't need to be retyped
         readonly string bandConnTextBase = "Band Connection: ";
         readonly string samplingIntervalTextBase = "Sampling interval: ";
-        readonly string currUVTextBase = "Current UV: ";
-        readonly string currUVWeatherTextBase = "Current UV Weather: ";
-        readonly string uvMinutesTextBase = "UV Minutes Spent: ";
+        readonly string currUVTextBase = "Measured UV: ";
+        readonly string currUVWeatherTextBase = "Current UV according to Weather: ";
+        readonly string uvMinutesTextBase = "Accumulated UV: ";
         readonly string skinColorTextBase = "Your skin type: ";
         readonly string appExposureTimeTextBase = "App measured exposure mins: ";
-        readonly string bandExposureTimeTextBase = "Band measured exposure mins: ";
+        readonly string bandExposureTimeTextBase = "Exposure time today: ";
         readonly string timeYouCanSpendTextBase = "Additional minutes you can spend under current exposure: ";
         readonly string uvMinutesLeftTextBase = "UV Minutes Left: ";
 
@@ -153,15 +153,15 @@ namespace UVapp
                 uvMinutesLeft = savedInstanceState.GetDouble("uvMinutesLeft", userSkinType.UVMinutesToBurn());
             }
 
-            samplingIntervalText.Text = $"Sampling interval: {samplingIntervalMinutes} minutes";
+            samplingIntervalText.Text = ""; //$"Sampling interval: {samplingIntervalMinutes} minutes";
             currUVText.Text = "";
             currUVWeatherText.Text = "";
             bandConnText.Text = "";
-            uvMinutesText.Text = $"UV minutes spent: {(int)uvMinutesSpent}";
+            uvMinutesText.Text = uvMinutesTextBase + $"{(int)uvMinutesSpent} ({(int)(uvMinutesSpent/userSkinType.UVMinutesToBurn())}%)";
             currentlySamplingText.Text = "";
-            skinColorText.Text = skinColorTextBase + userSkinType.ToString();
+            skinColorText.Text = skinColorTextBase + userSkinType.RomanNumeralsName();
             timeYouCanSpendText.Text = timeYouCanSpendTextBase + "safe";
-            appExposureTimeText.Text = appExposureTimeTextBase + 0;
+            appExposureTimeText.Text = ""; //appExposureTimeTextBase + 0;
             bandExposureTimeText.Text = "";
             uvMinutesLeftText.Text = uvMinutesLeftTextBase + (int)uvMinutesLeft;
             gettingUvWeatherText.Text = "";
@@ -301,14 +301,14 @@ namespace UVapp
                     connLostSinceLastSample = false;
                     lastUvSampleTime = DateTime.Now;
 
-                    if (currentUV >= 0) {
-                        NotifyUser("new uv sample");
+                    if (currentUV > 0) {
+                        NotifyUser("UV detected!");
                     }
 
                     RunOnUiThread(() => {      // To access the text, you need to run on ui thread
                         currUVText.Text = currUVTextBase + $"{currentUV} ({uviDescription})";
-                        uvMinutesText.Text = uvMinutesTextBase + uvMinutesSpent;
-                        uvMinutesLeftText.Text = uvMinutesLeftTextBase + (int)uvMinutesLeft;
+                        uvMinutesText.Text = uvMinutesTextBase + $"{(int)uvMinutesSpent} ({(int)(uvMinutesSpent / userSkinType.UVMinutesToBurn())}%)";
+                        //uvMinutesLeftText.Text = uvMinutesLeftTextBase + (int)uvMinutesLeft;
 
                         if (currentUV != 0)
                         {
@@ -320,7 +320,7 @@ namespace UVapp
                             timeYouCanSpendText.Text = timeYouCanSpendTextBase + "Safe";
                         }
 
-                        appExposureTimeText.Text = appExposureTimeTextBase + exposureMinutesApp;
+                        //appExposureTimeText.Text = appExposureTimeTextBase + exposureMinutesApp;
                         bandExposureTimeText.Text = bandExposureTimeTextBase + exposureMinutesBand;
 
                         currentlySamplingText.Text = "";

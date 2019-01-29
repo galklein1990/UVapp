@@ -160,7 +160,7 @@ namespace UVapp
             // 25% into the range from the lower bound
             return (3 * skinType.LowBoundRangeUVMinutes() + skinType.UpBoundRangeUVMinutes()) / 4;
         }
-        
+
         /**
          * Returns the lower bound of minimal dose to burn range
          */
@@ -199,13 +199,34 @@ namespace UVapp
                 case SkinType.Fitz3:
                     return 1000.0 / 3;
                 case SkinType.Fitz4:
-                    return 400;   
+                    return 400;
                 case SkinType.Fitz5:
                     return 600;
                 case SkinType.Fitz6:
                     return 1000;
                 default:
                     return 0;
+            }
+        }
+
+        public static string RomanNumeralsName(this SkinType skinType)
+        {
+            switch (skinType)
+            {
+                case SkinType.Fitz1:
+                    return "I";
+                case SkinType.Fitz2:
+                    return "II";
+                case SkinType.Fitz3:
+                    return "III";
+                case SkinType.Fitz4:
+                    return "IV";
+                case SkinType.Fitz5:
+                    return "V";
+                case SkinType.Fitz6:
+                    return "VI";
+                default:
+                    return "";
             }
         }
     }
