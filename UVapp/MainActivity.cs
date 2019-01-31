@@ -44,10 +44,10 @@ namespace UVapp
         bool firstExposureNotificationSent = false;
         bool halfAllowedUVnotificationSent = false;
 
-        int currentUV;
+        double currentUV;
         double weatherCurrentUV;
         double samplingIntervalMinutes = 1;
-        double weatherRequestIntervalMinutes = 30;  // It's actually limited to 60 requests per minute
+        double weatherRequestIntervalMinutes = 30;  // It's actually limited to 50 requests per day
         double uvMinutesSpent = 0;
         double uvMinutesLeft;
         long exposureMinutesApp;    // The exposure minutes we measure
@@ -138,7 +138,10 @@ namespace UVapp
                 RunOnUiThread(() =>
                 {
                     gettingUvWeatherText.Text = "";
-                    currUVWeatherText.Text = currUVWeatherTextBase + (int)weatherCurrentUV;
+                    if (weatherCurrentUV != -1)
+                        currUVWeatherText.Text = currUVWeatherTextBase + (int)Math.Round(weatherCurrentUV, 0, MidpointRounding.AwayFromZero);
+                    else
+                        currUVWeatherText.Text = "Error getting weather UV!";
                 });
             };
             uvWeatherTimer.AutoReset = true;
@@ -172,7 +175,7 @@ namespace UVapp
         {
             base.OnSaveInstanceState(outState);
 
-            outState.PutInt("currentUV", currentUV);
+            outState.PutDouble("currentUV", currentUV);
             outState.PutDouble("uvMinutesSpent", uvMinutesSpent);
             outState.PutDouble("uvMinutesLeft", uvMinutesLeft);
             outState.PutLong("exposureMinutesApp", exposureMinutesApp);
@@ -183,7 +186,7 @@ namespace UVapp
         {
             base.OnRestoreInstanceState(savedInstanceState);
 
-            currentUV = savedInstanceState.GetInt("currentUV");
+            currentUV = savedInstanceState.GetDouble("currentUV");
             uvMinutesSpent = savedInstanceState.GetDouble("uvMinutesSpent");
             uvMinutesLeft = savedInstanceState.GetDouble("uvMinutesLeft");
             exposureMinutesApp = savedInstanceState.GetLong("exposureMinutesApp");
@@ -267,13 +270,14 @@ namespace UVapp
                 if (uvSensor == null)
                     uvSensor = bandClient.SensorManager.CreateUVSensor();
 
-                UVIndexLevel uviDescription = null;
+                UVIndexLevel uviBandEnum = null;
 
                 uvSensor.ReadingChanged += (o, args) =>
                 {
                     
-                    uviDescription = args.SensorReading.UVIndexLevel;
-                    int uviNum = UVvalues.UvEnumToInt(uviDescription);
+                    uviBandEnum = args.SensorReading.UVIndexLevel;
+                    double uviNum = WeatherUV.CompareBandAndWeatherUV(uviBandEnum, weatherCurrentUV);
+                    
 
                     long prevExposureMinutes = exposureMinutesBand;
                     exposureMinutesBand = args.SensorReading.UVExposureToday;
@@ -308,19 +312,21 @@ namespace UVapp
                     connLostSinceLastSample = false;
                     lastUvSampleTime = DateTime.Now;
 
+                    int roundedUV = (int)Math.Round(currentUV, 0, MidpointRounding.AwayFromZero);
+
                     if (currentUV > 0 && !firstExposureNotificationSent) {
-                        NotifyUser($"UV level of {currentUV} detected!", $"If you are going to be exposed to the sun for more than {FormatTimeAmountForUser(userSkinType.MinutesToBurn(currentUV))}, wear protective clothing, hat and UV-blocking sunglasses and apply SPF 30+ sunscreen");
+                        NotifyUser($"UV level of {roundedUV} detected!", $"If you are going to be exposed to the sun for more than {FormatTimeAmountForUser(userSkinType.MinutesToBurn(currentUV))}, wear protective clothing, hat and UV-blocking sunglasses and apply SPF 30+ sunscreen");
                         firstExposureNotificationSent = true;
                     }
 
-                    if (uvMinutesLeft < userSkinType.UVMinutesToBurn()/2)
+                    if (uvMinutesLeft < userSkinType.UVMinutesToBurn()/2 && !halfAllowedUVnotificationSent)
                     {
                         NotifyUser("You've been exposed to over 50% of your allowed UV today!", $"Try to avoid additional sun exposure and make sure to apply SPF 30+ sunscreen and wear protective clothing, especially if you are going to be exposed for more than { FormatTimeAmountForUser(uvMinutesLeft / currentUV)}");
                         halfAllowedUVnotificationSent = true;
                     }
 
                     RunOnUiThread(() => {      // To access the text, you need to run on ui thread
-                        currUVText.Text = currUVTextBase + $"{currentUV} ({uviDescription})";
+                        currUVText.Text = currUVTextBase + $"{roundedUV} ({UVvalues.UvIntToEnum(roundedUV)})";
                         uvMinutesText.Text = uvMinutesTextBase + $"{(int)uvMinutesSpent} ({(int)(uvMinutesSpent*100 / userSkinType.UVMinutesToBurn())}%)";
                         //uvMinutesLeftText.Text = uvMinutesLeftTextBase + (int)uvMinutesLeft;
 
@@ -348,6 +354,8 @@ namespace UVapp
                 currUVText.Text = "Error Reading UV: " + ex.Message;
             }
         }
+
+        
 
         /*
         private async void getUVClick(object sender, System.EventArgs e)
@@ -409,7 +417,6 @@ namespace UVapp
             return await ServerRecommendations.getEnumUVRecommendation(uvi, httpClient);
         }
 
-       
         private string GetIntUVRecommendation(int uv)
         {
             return ClientRecommendations.getIntUVRecommendation(uv);
@@ -417,13 +424,17 @@ namespace UVapp
         
         public static string FormatTimeAmountForUser(double minutes)
         {
-            if (minutes < 120)
+            if (minutes < 60)
             {
                 return $"{(int)minutes} minutes";
             }
+            else if (minutes < 120)
+            {
+                return $"{(int)(minutes / 60)} hour and {((int)minutes)%60} minutes";
+            }
             else
             {
-                return $"{(int)(minutes / 60)} hours and {((int)minutes)%60} minutes";
+                return $"{(int)(minutes / 60)} hours and {((int)minutes) % 60} minutes";
             }
         }
         double MinutesToMS(double minutes)

@@ -106,7 +106,7 @@ namespace UVapp
             return -1;
         }
 
-
+        
 
     }
     // The 6 Fitzpatrick skin types
@@ -146,7 +146,7 @@ namespace UVapp
         /**
          * Returns the minutes it takes the skin type to burn under uv index uviNum
          */
-        public static double MinutesToBurn(this SkinType skinType, long uviNum)
+        public static double MinutesToBurn(this SkinType skinType, double uviNum)
         {
             return skinType.UVMinutesToBurn() / uviNum;
         }
