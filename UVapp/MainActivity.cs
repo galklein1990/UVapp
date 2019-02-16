@@ -12,8 +12,16 @@ using Microsoft.Band;
 using Microsoft.Band.Sensors;
 
 using Android.Support.V4.App;
-using TaskStackBuilder = Android.Support.V4.App.TaskStackBuilder;
+//using TaskStackBuilder = Android.Support.V4.App.TaskStackBuilder;
 
+using Android.Gms.Common;
+using Android.Gms.Location;
+using Android.Support.Design.Widget;
+using Android.Views;
+using Android;
+using Android.Support.V4.Content;
+using Android.Content.PM;
+using Android.Support.V7.App;
 
 [assembly: UsesPermission(Android.Manifest.Permission.Bluetooth)]
 [assembly: UsesPermission(Microsoft.Band.BandClientManager.BindBandService)]
@@ -21,7 +29,7 @@ using TaskStackBuilder = Android.Support.V4.App.TaskStackBuilder;
 namespace UVapp
 {
     [Activity(Label = "UVapp", MainLauncher = true)]
-    public class MainActivity : Activity
+    public class MainActivity : AppCompatActivity
     {
 
         public static readonly string CHANNEL_ID = "notificationChannel1";
@@ -31,22 +39,28 @@ namespace UVapp
 
         public static bool loggedIn = false; //should be replaced with a function -getter- from cloud
 
+        static readonly int LOCATION_PERMISSION_CODE = 1000;
+
         private HttpClient httpClient;
         private IBandClient bandClient;
         private IBandConnectionCallback bandConnCallback;   // band connection "event listener"
 
         TextView currUVText, currUVWeatherText, bandConnText, uvMinutesText, samplingIntervalText, currentlySamplingText;
-        TextView appExposureTimeText, bandExposureTimeText, skinColorText, timeYouCanSpendText, uvMinutesLeftText, gettingUvWeatherText; 
-        Random rnd = new Random();
-        
+        TextView appExposureTimeText, bandExposureTimeText, skinColorText, timeYouCanSpendText, uvMinutesLeftText, gettingUvWeatherText;
+        View rootLayout;
         Button connectBandButton;
 
         bool firstExposureNotificationSent = false;
         bool halfAllowedUVnotificationSent = false;
 
+        Android.Locations.Location currentLocation;
+        FusedLocationProviderClient fusedLocationProviderClient;
+        bool locationPermissionGranted = false;
+
         double currentUV;
         double weatherCurrentUV;
         double samplingIntervalMinutes = 1;
+        double locationSampleIntervalMinutes = 10;
         double weatherRequestIntervalMinutes = 30;  // It's actually limited to 50 requests per day
         double uvMinutesSpent = 0;
         double uvMinutesLeft;
@@ -59,12 +73,9 @@ namespace UVapp
 
         Timer uvWeatherTimer;
         Timer uvSampleTimer;
+        Timer updateLocationTimer;
         DateTime lastUvSampleTime;
         bool connLostSinceLastSample = true;
-
-        // Where I spend all my time
-        readonly double defaultLatitude = 32.1148223;
-        readonly double defaultLongitude = 34.8070341;
 
         // Constant strings that don't need to be retyped
         readonly string bandConnTextBase = "Band Connection: ";
@@ -104,9 +115,13 @@ namespace UVapp
             uvMinutesLeftText = FindViewById<TextView>(Resource.Id.uvMinutesLeftText);
             gettingUvWeatherText = FindViewById<TextView>(Resource.Id.gettingUvFromWeatherText);
 
+            rootLayout = FindViewById(Resource.Id.root_layout);
+
             connectBandButton = FindViewById<Button>(Resource.Id.connectbtn);
 
             connectBandButton.Click += ConnectBandClick;
+
+            fusedLocationProviderClient = LocationServices.GetFusedLocationProviderClient(this);
 
             uvSampleTimer = new Timer(1000);   // Initial interval is 1 second and it is changed after first sample
             uvSampleTimer.Elapsed += async (sender, args) =>
@@ -120,10 +135,34 @@ namespace UVapp
             uvSampleTimer.AutoReset = true;
             uvSampleTimer.Enabled = false; // Will only be enabled when the band connects
 
+            updateLocationTimer = new Timer(1000);
+            updateLocationTimer.Elapsed += async (sender, args) =>
+            {
+                updateLocationTimer.Interval = MinutesToMS(locationSampleIntervalMinutes);
+                await UpdateLocation(true);   // permissionCheck = true
+
+                if (!locationPermissionGranted)
+                {
+                    RunOnUiThread(() => { currUVWeatherText.Text = currUVWeatherTextBase + "Location permission not granted"; });
+                    return;
+                }
+
+                if (currentLocation == null)
+                {
+                    RunOnUiThread(() => { currUVWeatherText.Text = currUVWeatherTextBase + "Error getting location"; });
+                    return;
+                }
+            };
+            updateLocationTimer.AutoReset = true;
+            updateLocationTimer.Enabled = true;
+
+
             uvWeatherTimer = new Timer(1000);     // Initial interval is 1 second and it is changed after first request
             uvWeatherTimer.Elapsed += async (sender, args) =>
             {
                 uvWeatherTimer.Interval = MinutesToMS(weatherRequestIntervalMinutes);
+
+
                 if (httpClient == null)
                 {
                     httpClient = new HttpClient();
@@ -133,7 +172,7 @@ namespace UVapp
                 {
                     gettingUvWeatherText.Text = "Getting UV from weather...";
                 });
-                weatherCurrentUV = await WeatherUV.GetWeatherUvAsync(httpClient, defaultLatitude, defaultLongitude);
+                weatherCurrentUV = await WeatherUV.GetWeatherUvAsync(httpClient, currentLocation.Latitude, currentLocation.Longitude);
 
                 RunOnUiThread(() =>
                 {
@@ -145,7 +184,7 @@ namespace UVapp
                 });
             };
             uvWeatherTimer.AutoReset = true;
-            uvWeatherTimer.Enabled = true;
+            uvWeatherTimer.Enabled = false;
 
             lastUvSampleTime = DateTime.MinValue;
             if (savedInstanceState == null)
@@ -261,7 +300,7 @@ namespace UVapp
         {
             try
             {
-                //uv = rnd.Next(0, 11);
+                
                 if (bandClient == null)
                 {
                     return;
@@ -444,6 +483,64 @@ namespace UVapp
         double MsToMinutes(double milliseconds)
         {
             return milliseconds / (60 * 1000);
+        }
+
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
+        {
+            if (requestCode == LOCATION_PERMISSION_CODE)
+            {
+                if (grantResults.Length == 1 && grantResults[0] == Permission.Granted)
+                {
+                    UpdateLocation(false);
+                }
+                else
+                {
+                    ShowLocationPermissionRequestSnackbar();
+                }
+            }
+
+            base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+        void ShowLocationPermissionRequestSnackbar()
+        {
+            /* Snackbar requires the theme to be AppCompat or a descendant.
+             * If you want to use a different theme,
+             * replace this snackbar with something that works with it
+             */ 
+            Snackbar.Make(rootLayout, "Location is needed to determine local UV through weather", Snackbar.LengthIndefinite)
+                        .SetAction("ok",
+                                   delegate
+                                   {
+                                       ActivityCompat.RequestPermissions(this, new[] { Manifest.Permission.AccessCoarseLocation }, LOCATION_PERMISSION_CODE);
+                                   })
+                        .Show();
+        }
+
+        void RequestLocationPermission()
+        {
+            if (ActivityCompat.ShouldShowRequestPermissionRationale(this, Manifest.Permission.AccessCoarseLocation))
+            {
+                ShowLocationPermissionRequestSnackbar();
+            }
+            else
+            {
+                ActivityCompat.RequestPermissions(this, new[] { Manifest.Permission.AccessCoarseLocation }, LOCATION_PERMISSION_CODE);
+            }
+        }
+
+        async Task UpdateLocation(bool permissionCheck)
+        {
+            if (!permissionCheck || ContextCompat.CheckSelfPermission(this, Manifest.Permission.AccessCoarseLocation) == Permission.Granted)
+            {
+                currentLocation = await fusedLocationProviderClient.GetLastLocationAsync();
+                locationPermissionGranted = true;
+                uvWeatherTimer.Enabled = true;
+            }
+            else
+            {
+                RequestLocationPermission();
+            }
         }
 
         //////////////////////NOTIFICATIONS/////////////////////

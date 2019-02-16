@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/root_layout"
 	android:orientation="vertical"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
@@ -19,7 +20,7 @@
 	<TextView
 		android:text="bandConnectionText"
 		android:textSize="20sp"
-		android:textColor="@android:color/black"
+		android:textColor="@android:color/white"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginLeft="20sp"
@@ -28,7 +29,7 @@
 	<TextView
 		android:text="currentUVText"
 		android:textSize="20sp"
-		android:textColor="@android:color/black"
+		android:textColor="@android:color/white"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginLeft="20sp"
@@ -37,7 +38,7 @@
 	<TextView
 		android:text="currentUVWeatherText"
 		android:textSize="20sp"
-		android:textColor="@android:color/black"
+		android:textColor="@android:color/white"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginLeft="20sp"
@@ -46,7 +47,7 @@
 	<TextView
 		android:text="uvMinutesText"
 		android:textSize="20sp"
-		android:textColor="@android:color/black"
+		android:textColor="@android:color/white"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginLeft="20sp"
@@ -55,7 +56,7 @@
 	<TextView
 		android:text="uvMinutesLeftText"
 		android:textSize="20sp"
-		android:textColor="@android:color/black"
+		android:textColor="@android:color/white"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginLeft="20sp"
@@ -64,7 +65,7 @@
 	<TextView
 		android:text="appExposureTimeText"
 		android:textSize="20sp"
-		android:textColor="@android:color/black"
+		android:textColor="@android:color/white"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginLeft="20sp"
@@ -73,7 +74,7 @@
 	<TextView
 		android:text="bandExposureTimeText"
 		android:textSize="20sp"
-		android:textColor="@android:color/black"
+		android:textColor="@android:color/white"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginLeft="20sp"
@@ -82,7 +83,7 @@
 	<TextView
 		android:text="skinColorText"
 		android:textSize="20sp"
-		android:textColor="@android:color/black"
+		android:textColor="@android:color/white"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginLeft="20sp"
@@ -91,7 +92,7 @@
 	<TextView
 		android:text="timeYouCanSpendText"
 		android:textSize="20sp"
-		android:textColor="@android:color/black"
+		android:textColor="@android:color/white"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginLeft="20sp"
@@ -100,7 +101,7 @@
 	<TextView
 		android:text="samplingRateText"
 		android:textSize="20sp"
-		android:textColor="@android:color/black"
+		android:textColor="@android:color/white"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginLeft="20sp"
@@ -109,7 +110,7 @@
 	<TextView
 		android:text="Sampling..."
 		android:textSize="20sp"
-		android:textColor="@android:color/black"
+		android:textColor="@android:color/white"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginLeft="20sp"
@@ -118,7 +119,7 @@
 	<TextView
 		android:text="gettingUVfromWeatherText"
 		android:textSize="20sp"
-		android:textColor="@android:color/black"
+		android:textColor="@android:color/white"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginLeft="20sp"
