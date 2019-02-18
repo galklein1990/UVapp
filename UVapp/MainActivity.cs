@@ -59,7 +59,8 @@ namespace UVapp
 
         double currentUV;
         double weatherCurrentUV;
-        double samplingIntervalMinutes = 1;
+        double uvBandSamplingIntervalSeconds = 60;
+        double bandConnectionTimeoutSeconds = 30;
         double locationSampleIntervalMinutes = 10;
         double weatherRequestIntervalMinutes = 30;  // It's actually limited to 50 requests per day
         double uvMinutesSpent = 0;
@@ -74,8 +75,12 @@ namespace UVapp
         Timer uvWeatherTimer;
         Timer uvSampleTimer;
         Timer updateLocationTimer;
+        Timer bandConnTimer;
+        Timer bandConnTimeoutTimer;
         DateTime lastUvSampleTime;
+
         bool connLostSinceLastSample = true;
+        bool bandConnPreviouslySuccessful = false;
 
         // Constant strings that don't need to be retyped
         readonly string bandConnTextBase = "Band Connection: ";
@@ -102,6 +107,7 @@ namespace UVapp
                 Intent loginIntent = new Intent(this, typeof(Login_activity));
                 StartActivity(loginIntent);
             }
+
             bandConnText = FindViewById<TextView>(Resource.Id.bandConnectionText);
             currUVText = FindViewById<TextView>(Resource.Id.currentUVText);
             currUVWeatherText = FindViewById<TextView>(Resource.Id.currentUVWeatherText);
@@ -119,70 +125,33 @@ namespace UVapp
 
             connectBandButton = FindViewById<Button>(Resource.Id.connectbtn);
 
-            connectBandButton.Click += ConnectBandClick;
+            connectBandButton.Click += ConnectBand;
 
             fusedLocationProviderClient = LocationServices.GetFusedLocationProviderClient(this);
 
+            bandConnTimer = new Timer(1000);
+            bandConnTimer.Elapsed += ConnectBand;
+            bandConnTimer.Enabled = true;
+            bandConnTimer.AutoReset = false;
+
             uvSampleTimer = new Timer(1000);   // Initial interval is 1 second and it is changed after first sample
-            uvSampleTimer.Elapsed += async (sender, args) =>
-            {
-                RunOnUiThread(() => {      // To access the text, you need to run on ui thread
-                    currentlySamplingText.Text = "Sampling UV...";
-                });
-                uvSampleTimer.Interval = MinutesToMS(samplingIntervalMinutes);
-                await SampleBandUV();
-            };
+            uvSampleTimer.Elapsed += uvSampleTimerElapsed;
             uvSampleTimer.AutoReset = true;
             uvSampleTimer.Enabled = false; // Will only be enabled when the band connects
 
+            bandConnTimeoutTimer = new Timer(SecondsToMS(bandConnectionTimeoutSeconds));
+            bandConnTimeoutTimer.Enabled = false;
+            bandConnTimeoutTimer.AutoReset = false;
+            bandConnTimeoutTimer.Elapsed += BandConnTimeoutElapsed;
+
             updateLocationTimer = new Timer(1000);
-            updateLocationTimer.Elapsed += async (sender, args) =>
-            {
-                updateLocationTimer.Interval = MinutesToMS(locationSampleIntervalMinutes);
-                await UpdateLocation(true);   // permissionCheck = true
-
-                if (!locationPermissionGranted)
-                {
-                    RunOnUiThread(() => { currUVWeatherText.Text = currUVWeatherTextBase + "Location permission not granted"; });
-                    return;
-                }
-
-                if (currentLocation == null)
-                {
-                    RunOnUiThread(() => { currUVWeatherText.Text = currUVWeatherTextBase + "Error getting location"; });
-                    return;
-                }
-            };
+            updateLocationTimer.Elapsed += updateLocationTimerElapsed;
             updateLocationTimer.AutoReset = true;
             updateLocationTimer.Enabled = true;
 
 
             uvWeatherTimer = new Timer(1000);     // Initial interval is 1 second and it is changed after first request
-            uvWeatherTimer.Elapsed += async (sender, args) =>
-            {
-                uvWeatherTimer.Interval = MinutesToMS(weatherRequestIntervalMinutes);
-
-
-                if (httpClient == null)
-                {
-                    httpClient = new HttpClient();
-                }
-
-                RunOnUiThread(() =>
-                {
-                    gettingUvWeatherText.Text = "Getting UV from weather...";
-                });
-                weatherCurrentUV = await WeatherUV.GetWeatherUvAsync(httpClient, currentLocation.Latitude, currentLocation.Longitude);
-
-                RunOnUiThread(() =>
-                {
-                    gettingUvWeatherText.Text = "";
-                    if (weatherCurrentUV != -1)
-                        currUVWeatherText.Text = currUVWeatherTextBase + (int)Math.Round(weatherCurrentUV, 0, MidpointRounding.AwayFromZero);
-                    else
-                        currUVWeatherText.Text = "Error getting weather UV!";
-                });
-            };
+            uvWeatherTimer.Elapsed += uvWeatherTimerElapsed;
             uvWeatherTimer.AutoReset = true;
             uvWeatherTimer.Enabled = false;
 
@@ -232,7 +201,7 @@ namespace UVapp
             exposureMinutesBand = savedInstanceState.GetLong("exposureMinutesBand");
         }
 
-        private async void ConnectBandClick(object sender, System.EventArgs e)
+        private async void ConnectBand(object sender, System.EventArgs e)
         {
            
             IBandInfo[] pairedBands = BandClientManager.Instance.GetPairedBands();
@@ -240,7 +209,6 @@ namespace UVapp
             if (pairedBands.Length < 1)
             {
                 bandConnText.Text = "Band not paired!";
-                //BandClientManager.Instance.Dispose
                 return;
             }
 
@@ -265,12 +233,21 @@ namespace UVapp
                     
                     if (connectionState == ConnectionState.Connected)
                     {
-                        //await measureUV();
+                        bandConnPreviouslySuccessful = true;
+                        bandConnTimer.Enabled = false;
+                        bandConnTimeoutTimer.Enabled = false;
                         uvSampleTimer.Start();
                     }
                     else
                     {
                         connLostSinceLastSample = true;
+
+                        if (bandConnPreviouslySuccessful)
+                        {
+                            bandConnTimer.Enabled = true;
+                        }
+                        
+                        bandConnTimeoutTimer.Enabled = true;
 
                         RunOnUiThread(() =>
                         {
@@ -394,58 +371,67 @@ namespace UVapp
             }
         }
 
-        
-
-        /*
-        private async void getUVClick(object sender, System.EventArgs e)
+        private async void uvSampleTimerElapsed(object sender, System.EventArgs args)
         {
-            try
+           
+            RunOnUiThread(() => {      // To access the text, you need to run on ui thread
+                currentlySamplingText.Text = "Sampling UV...";
+            });
+            uvSampleTimer.Interval = SecondsToMS(uvBandSamplingIntervalSeconds);
+            await SampleBandUV();
+            
+        }
+
+        private async void uvWeatherTimerElapsed(object sender, System.EventArgs args)
+        {
+            uvWeatherTimer.Interval = MinutesToMS(weatherRequestIntervalMinutes);
+
+            if (httpClient == null)
             {
-                //uv = rnd.Next(0, 11);
-            if (bandClient == null)
+                httpClient = new HttpClient();
+            }
+
+            RunOnUiThread(() =>
             {
-                recommendation.Text = "Connect band first";
+                gettingUvWeatherText.Text = "Getting UV from weather...";
+            });
+            weatherCurrentUV = await WeatherUV.GetWeatherUvAsync(httpClient, currentLocation.Latitude, currentLocation.Longitude);
+
+            RunOnUiThread(() =>
+            {
+                gettingUvWeatherText.Text = "";
+                if (weatherCurrentUV != -1)
+                    currUVWeatherText.Text = currUVWeatherTextBase + (int)Math.Round(weatherCurrentUV, 0, MidpointRounding.AwayFromZero);
+                else
+                    currUVWeatherText.Text = "Error getting weather UV!";
+            });
+        }
+
+        private async void updateLocationTimerElapsed(object sender, System.EventArgs args)
+        {
+            updateLocationTimer.Interval = MinutesToMS(locationSampleIntervalMinutes);
+            await UpdateLocation(true);   // permissionCheck = true
+
+            if (!locationPermissionGranted)
+            {
+                RunOnUiThread(() => { currUVWeatherText.Text = currUVWeatherTextBase + "Location permission not granted"; });
                 return;
             }
 
-            var uvSensor = bandClient.SensorManager.CreateUVSensor();
-            UVIndexLevel uviDescription = null;
-            Boolean uvRead = false;
-
-            string recString;
-            uvSensor.ReadingChanged += (o, args) =>
+            if (currentLocation == null)
             {
-                    
-                uviDescription = args.SensorReading.UVIndexLevel;
-                long uviNum = args.SensorReading.UVExposureToday;
-                uvRead = true;
-                timesUVRead += 1;
-
-                RunOnUiThread(async () => {      // To access the text, you need to run on ui thread
-                    recommendation.Text = "Getting recommendation...";
-
-                    recommendation.Text = $"Exposure today is {uviNum}\n";
-                    recString = await getEnumUVRecommendation(uviDescription);
-                    recommendation.Text += recString;
-                    recommendation.Text += $"\n Read {timesUVRead} times";
-                });
-
-                uvSensor.StopReadings();
-                uvSensor.StartReadings();
-            };
-
-            recommendation.Text = "Getting UV Reading...";
-            uvSensor.StartReadings();
-
-
-            }
-            catch (BandException ex)
-            {
-                recommendation.Text = ex.Message;
-                ex.ErrorType.Name();
+                RunOnUiThread(() => { currUVWeatherText.Text = currUVWeatherTextBase + "Error getting location"; });
+                return;
             }
         }
-        */
+
+        private void BandConnTimeoutElapsed(object sender, System.EventArgs args)
+        {
+            // TODO: show "Could not connect band" message and show a retry button. Use ConnectBand for the click event
+
+            NotifyUser("Band Connection Lost", "Check your bluetooth and band and reconnect");
+        }
+
 
         private async Task<string> GetEnumUVRecommendation(UVIndexLevel uvi)
         {
@@ -460,7 +446,10 @@ namespace UVapp
         {
             return ClientRecommendations.getIntUVRecommendation(uv);
         }
-        
+
+
+        ////////////////////// Utility functions /////////////////////
+
         public static string FormatTimeAmountForUser(double minutes)
         {
             if (minutes < 60)
@@ -484,6 +473,13 @@ namespace UVapp
         {
             return milliseconds / (60 * 1000);
         }
+        double SecondsToMS(double seconds)
+        {
+            return seconds * 1000;
+        }
+
+
+        ////////////////////// PERMISSIONS /////////////////////
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
         {
@@ -543,7 +539,7 @@ namespace UVapp
             }
         }
 
-        //////////////////////NOTIFICATIONS/////////////////////
+        ////////////////////// NOTIFICATIONS /////////////////////
         private void CreateNotificationChannel()
         {
             if (Build.VERSION.SdkInt < BuildVersionCodes.O)
