@@ -22,3 +22,5 @@ Xamarin.GooglePlayServices.Basement
 Xamarin.GooglePlayServices.Location
 Xamarin.GooglePlayServices.Maps
 Xamarin.GooglePlayServices.Tasks
+System.Collections.Immutable
+Microsoft.Azure.DocumentDB.Core
