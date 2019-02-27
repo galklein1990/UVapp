@@ -26,13 +26,14 @@ namespace UVapp
         // ADD THIS PART TO YOUR CODE
         private const string EndpointUrl = "https://uvsafe2.documents.azure.com:443/";
         private const string PrimaryKey = "Oc2HgAOWqt71ykwIVN4lOtsjYCVDQXxBuXEzXWqUxRBy42v9NNKD1cziNPyu5YBBzHla8JE1UDvn7PcZQlcEjg==";
-        private DocumentClient client;
-        private string databaseName = "UsersDB";
-        private string collectionName = "UsersCollection";
-
+        static private DocumentClient client = new DocumentClient(new Uri(EndpointUrl), PrimaryKey); 
+        static private string databaseName = "UsersDB";
+        static private string collectionName = "UsersCollection";
+        enum LoginStatus {Logged , NotLogged };
         public class User
         {
             [JsonProperty(PropertyName = "id")]
+            public string Id { get; set;}
             public string UserName { get; set; }
             public string Password { get; set; }
             public int TimeExposed { get; set; }
@@ -46,34 +47,50 @@ namespace UVapp
         public async Task GetStartedDemo()
         {
             // 
+          //  this.client = new DocumentClient(new Uri(EndpointUrl), PrimaryKey);
             //await this.client.CreateDatabaseIfNotExistsAsync(new Database { Id = this.databaseName });
 
-            //await this.client.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri(this.databaseName), new DocumentCollection { Id = this.collectionName });
+          //  await this.client.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri(this.databaseName), new DocumentCollection { Id = this.collectionName });
             Console.WriteLine("gotHere 2");
-            User gal = new User
+         /*   User dani = new User
             {
                 UserName = "gal",
                 Password = "1234",
                 TimeExposed = 0
             };
-            await this.CreateUserDocumentIfNotExists(this.databaseName, this.collectionName, gal);
+      //      await this.CreateUserDocumentIfNotExists(this.databaseName, this.collectionName, dani);
+            */
+            
+            // this.createUser("gal", "1234");
 
-            await this.createUser("gal", "1234");
-            this.DoesUserExist(this.databaseName, this.collectionName, "gal", "1234");
+            this.GetUserLoginStatus( "gal", "1234");
         }
 
 
 
-        public async Task createUser(string userName, string password)
+        public async static void UpdateUserExposedField(string userName, string password ,int exposed)
         {
             User gal = new User
             {
+                Id = (userName + "-" + password),
+                UserName = userName,
+                Password = password,
+                TimeExposed = exposed
+            };
+            await UserManager.client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(databaseName, collectionName, gal.Id), gal);
+
+        }
+
+        public async static void createUser(string userName, string password)
+        {
+            User gal = new User
+            {
+                Id = (userName + "-" + password),
                 UserName = userName,
                 Password = password,
                 TimeExposed = 0
             };
-            await this.CreateUserDocumentIfNotExists(this.databaseName, this.collectionName, gal);
-
+            await UserManager.client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(UserManager.databaseName, UserManager.collectionName), gal);
 
         }
 
@@ -89,7 +106,7 @@ namespace UVapp
 
 
 
-
+        /*
 
         private async Task CreateUserDocumentIfNotExists(string databaseName, string collectionName, User user)
         {
@@ -113,30 +130,30 @@ namespace UVapp
             }
         }
 
+    */
 
+        
 
-
-
-        public bool DoesUserExist(string databaseName, string collectionName, string userName, string password)
+        public int GetUserLoginStatus(string userName, string password)
         {
             // Set some common query options
             FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
 
             // Here we find the Andersen family via its LastName
-            IQueryable<User> userQuery = this.client.CreateDocumentQuery<User>(
-                    UriFactory.CreateDocumentCollectionUri(databaseName, collectionName), queryOptions)
+            IQueryable<User> userQuery = UserManager.client.CreateDocumentQuery<User>(
+                    UriFactory.CreateDocumentCollectionUri(UserManager.databaseName, UserManager.collectionName), queryOptions)
                     .Where(f => (f.UserName == userName && f.Password == password));
 
             Console.WriteLine("Running direct SQL query...");
             foreach (User user in userQuery)
             {
                 Console.WriteLine("\tRead and found user {0}", user);
-                return true;
+                return (int)LoginStatus.Logged;
             }
 
             Console.WriteLine("we did nor found user!");
 
-            return false;
+            return (int)LoginStatus.NotLogged;
         }
 
 

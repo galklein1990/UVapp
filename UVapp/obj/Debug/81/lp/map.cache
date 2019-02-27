@@ -1,5 +1,7 @@
+Microsoft.Azure.DocumentDB.Core
 Microsoft.Band.Android
 Newtonsoft.Json
+System.Collections.Immutable
 System.Runtime
 Xamarin.Android.Arch.Core.Common
 Xamarin.Android.Arch.Lifecycle.Common
@@ -22,5 +24,3 @@ Xamarin.GooglePlayServices.Basement
 Xamarin.GooglePlayServices.Location
 Xamarin.GooglePlayServices.Maps
 Xamarin.GooglePlayServices.Tasks
-System.Collections.Immutable
-Microsoft.Azure.DocumentDB.Core

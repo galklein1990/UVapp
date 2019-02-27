@@ -38,7 +38,9 @@ namespace UVapp
         public void LoginFunction(object sender, System.EventArgs e)
         {
             //call cloud fuction to check if user is in database that returns a number describing a situation 
-            int res = 0;
+            UserManager userManager = new UserManager();
+
+            int res = userManager.GetUserLoginStatus(username.Text,password.Text);
             switch (res) {
                 case 0:
                     txt.Text = "login successful";
@@ -59,6 +61,13 @@ namespace UVapp
         }
 
         public void AddUserFunction(object sender, System.EventArgs e) {
+            string userName = username.Text;
+            string Password = password.Text;
+            username.Text = "";
+            password.Text = "";
+            txt.Text = "You have now created an account, please try to login";   
+            UserManager.createUser(userName, Password);
+           // UserManager.UpdateUserExposedField(userName, Password, 5);   // exaple for updating user timeExposed
             return;
         }
     }
