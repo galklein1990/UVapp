@@ -185,6 +185,7 @@ C:\gal\UVapp\UVapp\obj\Debug\81\res\layout\loginlayout.xml
 C:\gal\UVapp\UVapp\obj\Debug\81\res\layout\main.xml
 C:\gal\UVapp\UVapp\obj\Debug\81\res\values\strings.xml
 C:\gal\UVapp\UVapp\obj\Debug\81\res\values\style.xml
+C:\gal\UVapp\UVapp\obj\Debug\81\res\layout\registerlayout.xml
 C:\gal\UVapp\UVapp\obj\Debug\81\R.cs.flag
 C:\gal\UVapp\UVapp\obj\Debug\81\R.txt
 C:\gal\UVapp\UVapp\obj\Debug\81\uploadflags.txt
@@ -226,7 +227,6 @@ C:\gal\UVapp\UVapp\obj\Debug\81\linksrc\System.Web.Services.pdb
 C:\gal\UVapp\UVapp\obj\Debug\81\linksrc\System.Xml.Linq.pdb
 C:\gal\UVapp\UVapp\obj\Debug\81\linksrc\Mono.Security.pdb
 C:\gal\UVapp\UVapp\obj\Debug\81\linksrc\UVapp.dll.mdb
-C:\gal\UVapp\UVapp\obj\Debug\81\UVapp.csprojAssemblyReference.cache
 C:\gal\UVapp\UVapp\bin\Debug\UVapp.dll.mdb
 C:\gal\UVapp\UVapp\obj\Debug\81\android\assets\UVapp.dll.mdb
 C:\gal\UVapp\UVapp\obj\Debug\81\android\assets\Microsoft.CSharp.pdb
@@ -248,5 +248,6 @@ C:\gal\UVapp\UVapp\obj\Debug\81\android\assets\System.Transactions.pdb
 C:\gal\UVapp\UVapp\obj\Debug\81\android\assets\System.Web.Services.pdb
 C:\gal\UVapp\UVapp\obj\Debug\81\android\assets\System.Xml.Linq.pdb
 C:\gal\UVapp\UVapp\obj\Debug\81\android\assets\System.Xml.pdb
+C:\gal\UVapp\UVapp\obj\Debug\81\UVapp.csprojAssemblyReference.cache
 C:\gal\UVapp\UVapp\bin\Debug\UVapp.dll
 C:\gal\UVapp\UVapp\obj\Debug\81\linksrc\UVapp.dll.mdb

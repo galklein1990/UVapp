@@ -15,6 +15,7 @@
       </intent-filter>
     </activity>
     <service android:name="md5a324db91cfe94c0569a2d42a42e99e15.NotificationService" />
+    <activity android:label="Register_activity" android:name="md5a324db91cfe94c0569a2d42a42e99e15.Register_activity" />
     <provider android:name="mono.MonoRuntimeProvider" android:exported="false" android:initOrder="2147483647" android:authorities="UVapp.UVapp.mono.MonoRuntimeProvider.__mono_init__" />
     <!--suppress ExportedReceiver-->
     <receiver android:name="mono.android.Seppuku">

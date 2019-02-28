@@ -3261,6 +3261,9 @@ namespace UVapp
 		public partial class Id
 		{
 			
+			// aapt resource value: 0x7F010021
+			public const int accountrtxt = 2130772001;
+			
 			// aapt resource value: 0x7F0C0001
 			public const int action0 = 2131492865;
 			
@@ -3324,11 +3327,11 @@ namespace UVapp
 			// aapt resource value: 0x7F0C0015
 			public const int add = 2131492885;
 			
-			// aapt resource value: 0x7F010167
-			public const int adjust_height = 2130772327;
+			// aapt resource value: 0x7F010170
+			public const int adjust_height = 2130772336;
 			
-			// aapt resource value: 0x7F010166
-			public const int adjust_width = 2130772326;
+			// aapt resource value: 0x7F010169
+			public const int adjust_width = 2130772329;
 			
 			// aapt resource value: 0x1
 			public const int ad_container = 1;
@@ -3360,11 +3363,11 @@ namespace UVapp
 			// aapt resource value: 0x7F010014
 			public const int appExposureTimeText = 2130771988;
 			
-			// aapt resource value: 0x7F010173
-			public const int APP_NAME = 2130772339;
+			// aapt resource value: 0x7F010176
+			public const int APP_NAME = 2130772342;
 			
-			// aapt resource value: 0x7F010165
-			public const int app_name = 2130772325;
+			// aapt resource value: 0x7F010168
+			public const int app_name = 2130772328;
 			
 			// aapt resource value: 0x7F0C0006
 			public const int async = 2131492870;
@@ -3531,8 +3534,8 @@ namespace UVapp
 			// aapt resource value: 0x7F0C0024
 			public const int customPanel = 2131492900;
 			
-			// aapt resource value: 0x7F010171
-			public const int dark = 2130772337;
+			// aapt resource value: 0x7F010174
+			public const int dark = 2130772340;
 			
 			// aapt resource value: 0x1
 			public const int date = 1;
@@ -3642,8 +3645,8 @@ namespace UVapp
 			// aapt resource value: 0x7F0C000B
 			public const int icon_group = 2131492875;
 			
-			// aapt resource value: 0x7F010170
-			public const int icon_only = 2130772336;
+			// aapt resource value: 0x7F010173
+			public const int icon_only = 2130772339;
 			
 			// aapt resource value: 0x1
 			public const int icon_uri = 1;
@@ -3705,8 +3708,8 @@ namespace UVapp
 			// aapt resource value: 0x1
 			public const int license_list = 1;
 			
-			// aapt resource value: 0x7F010172
-			public const int light = 2130772338;
+			// aapt resource value: 0x7F010175
+			public const int light = 2130772341;
 			
 			// aapt resource value: 0x7F0C000E
 			public const int line1 = 2131492878;
@@ -3846,6 +3849,12 @@ namespace UVapp
 			// aapt resource value: 0x7F0C0053
 			public const int radio = 2131492947;
 			
+			// aapt resource value: 0x7F010022
+			public const int registerButton = 2130772002;
+			
+			// aapt resource value: 0x7F010023
+			public const int registertxt = 2130772003;
+			
 			// aapt resource value: 0x1
 			public const int rfc822 = 1;
 			
@@ -3969,8 +3978,8 @@ namespace UVapp
 			// aapt resource value: 0x7F0C0072
 			public const int src_over = 2131492978;
 			
-			// aapt resource value: 0x7F010168
-			public const int standard = 2130772328;
+			// aapt resource value: 0x7F010171
+			public const int standard = 2130772337;
 			
 			// aapt resource value: 0x7F0C0073
 			public const int start = 2131492979;
@@ -4113,8 +4122,8 @@ namespace UVapp
 			// aapt resource value: 0x7F0C008F
 			public const int visible = 2131493007;
 			
-			// aapt resource value: 0x7F010169
-			public const int wide = 2130772329;
+			// aapt resource value: 0x7F010172
+			public const int wide = 2130772338;
 			
 			// aapt resource value: 0x7F0C0090
 			public const int wrap_content = 2131493008;
@@ -4393,6 +4402,9 @@ namespace UVapp
 			
 			// aapt resource value: 0x1
 			public const int place_autocomplete_progress = 1;
+			
+			// aapt resource value: 0x7F020004
+			public const int registerLayout = 2130837508;
 			
 			// aapt resource value: 0x7F0F0038
 			public const int select_dialog_item_material = 2131689528;

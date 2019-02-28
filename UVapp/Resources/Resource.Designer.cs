@@ -2513,6 +2513,9 @@ namespace UVapp
 			// aapt resource value: 0x7f0a0042
 			public const int SYM = 2131361858;
 			
+			// aapt resource value: 0x7f0a00c9
+			public const int accountrtxt = 2131361993;
+			
 			// aapt resource value: 0x7f0a00b9
 			public const int action0 = 2131361977;
 			
@@ -2807,14 +2810,14 @@ namespace UVapp
 			// aapt resource value: 0x7f0a00a7
 			public const int logintxt = 2131361959;
 			
-			// aapt resource value: 0x7f0a00cb
-			public const int masked = 2131361995;
+			// aapt resource value: 0x7f0a00ce
+			public const int masked = 2131361998;
 			
 			// aapt resource value: 0x7f0a00bc
 			public const int media_actions = 2131361980;
 			
-			// aapt resource value: 0x7f0a00c9
-			public const int message = 2131361993;
+			// aapt resource value: 0x7f0a00cc
+			public const int message = 2131361996;
 			
 			// aapt resource value: 0x7f0a003c
 			public const int middle = 2131361852;
@@ -2869,6 +2872,12 @@ namespace UVapp
 			
 			// aapt resource value: 0x7f0a007f
 			public const int radio = 2131361919;
+			
+			// aapt resource value: 0x7f0a00ca
+			public const int registerButton = 2131361994;
+			
+			// aapt resource value: 0x7f0a00cb
+			public const int registertxt = 2131361995;
 			
 			// aapt resource value: 0x7f0a0054
 			public const int right = 2131361876;
@@ -3095,8 +3104,8 @@ namespace UVapp
 			// aapt resource value: 0x7f0a0016
 			public const int view_offset_helper = 2131361814;
 			
-			// aapt resource value: 0x7f0a00ca
-			public const int visible = 2131361994;
+			// aapt resource value: 0x7f0a00cd
+			public const int visible = 2131361997;
 			
 			// aapt resource value: 0x7f0a0026
 			public const int wide = 2131361830;
@@ -3338,19 +3347,22 @@ namespace UVapp
 			public const int notification_template_part_time = 2130903096;
 			
 			// aapt resource value: 0x7f030039
-			public const int select_dialog_item_material = 2130903097;
+			public const int registerLayout = 2130903097;
 			
 			// aapt resource value: 0x7f03003a
-			public const int select_dialog_multichoice_material = 2130903098;
+			public const int select_dialog_item_material = 2130903098;
 			
 			// aapt resource value: 0x7f03003b
-			public const int select_dialog_singlechoice_material = 2130903099;
+			public const int select_dialog_multichoice_material = 2130903099;
 			
 			// aapt resource value: 0x7f03003c
-			public const int support_simple_spinner_dropdown_item = 2130903100;
+			public const int select_dialog_singlechoice_material = 2130903100;
 			
 			// aapt resource value: 0x7f03003d
-			public const int tooltip = 2130903101;
+			public const int support_simple_spinner_dropdown_item = 2130903101;
+			
+			// aapt resource value: 0x7f03003e
+			public const int tooltip = 2130903102;
 			
 			static Layout()
 			{

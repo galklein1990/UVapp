@@ -3231,6 +3231,7 @@ containing a value of this type.
         public static final int META=0x7f0a0040;
         public static final int SHIFT=0x7f0a0041;
         public static final int SYM=0x7f0a0042;
+        public static final int accountrtxt=0x7f0a00c9;
         public static final int action0=0x7f0a00b9;
         public static final int action_bar=0x7f0a0086;
         public static final int action_bar_activity_content=0x7f0a0001;
@@ -3329,9 +3330,9 @@ containing a value of this type.
         public static final int list_item=0x7f0a006b;
         public static final int loginButton=0x7f0a00a5;
         public static final int logintxt=0x7f0a00a7;
-        public static final int masked=0x7f0a00cb;
+        public static final int masked=0x7f0a00ce;
         public static final int media_actions=0x7f0a00bc;
-        public static final int message=0x7f0a00c9;
+        public static final int message=0x7f0a00cc;
         public static final int middle=0x7f0a003c;
         public static final int mini=0x7f0a005d;
         public static final int multiply=0x7f0a0033;
@@ -3350,6 +3351,8 @@ containing a value of this type.
         public static final int progress_circular=0x7f0a0006;
         public static final int progress_horizontal=0x7f0a0007;
         public static final int radio=0x7f0a007f;
+        public static final int registerButton=0x7f0a00ca;
+        public static final int registertxt=0x7f0a00cb;
         public static final int right=0x7f0a0054;
         public static final int right_icon=0x7f0a00c4;
         public static final int right_side=0x7f0a00c0;
@@ -3425,7 +3428,7 @@ containing a value of this type.
         public static final int uvMinutesLeftText=0x7f0a00ae;
         public static final int uvMinutesText=0x7f0a00ad;
         public static final int view_offset_helper=0x7f0a0016;
-        public static final int visible=0x7f0a00ca;
+        public static final int visible=0x7f0a00cd;
         public static final int wide=0x7f0a0026;
         public static final int withText=0x7f0a0047;
         public static final int wrap_content=0x7f0a0039;
@@ -3501,11 +3504,12 @@ containing a value of this type.
         public static final int notification_template_media_custom=0x7f030036;
         public static final int notification_template_part_chronometer=0x7f030037;
         public static final int notification_template_part_time=0x7f030038;
-        public static final int select_dialog_item_material=0x7f030039;
-        public static final int select_dialog_multichoice_material=0x7f03003a;
-        public static final int select_dialog_singlechoice_material=0x7f03003b;
-        public static final int support_simple_spinner_dropdown_item=0x7f03003c;
-        public static final int tooltip=0x7f03003d;
+        public static final int registerlayout=0x7f030039;
+        public static final int select_dialog_item_material=0x7f03003a;
+        public static final int select_dialog_multichoice_material=0x7f03003b;
+        public static final int select_dialog_singlechoice_material=0x7f03003c;
+        public static final int support_simple_spinner_dropdown_item=0x7f03003d;
+        public static final int tooltip=0x7f03003e;
     }
     public static final class string {
         public static final int abc_action_bar_home_description=0x7f070011;

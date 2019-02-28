@@ -62,12 +62,18 @@ namespace UVapp
 
       
         public void AddUserFunction(object sender, System.EventArgs e) {
-            User user = new User(username.Text, password.Text);
-            username.Text = "";
-            password.Text = "";
-            txt.Text = "You have now created an account, please try to login";   
-            UserManager.createUser(user);
-           // UserManager.UpdateUserExposedField(userName, Password, 5);   // exaple for updating user timeExposed
+            /*  User user = new User(username.Text, password.Text);
+              username.Text = "";
+              password.Text = "";
+              txt.Text = "You have now created an account, please try to login";   
+              UserManager.createUser(user);
+             // UserManager.UpdateUserExposedField(userName, Password, 5);   // exaple for updating user timeExposed
+             */
+            txt.Text = "login successful";
+            Intent registerIntent = new Intent(this, typeof(Register_activity));
+            //registerIntent.PutExtra("name", username.Text);
+            //MainActivity.loggedIn = true;
+            StartActivity(registerIntent);
             return;
         }
     }

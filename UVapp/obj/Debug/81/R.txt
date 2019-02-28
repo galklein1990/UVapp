@@ -795,6 +795,7 @@ int id FUNCTION 0x7f0a003f
 int id META 0x7f0a0040
 int id SHIFT 0x7f0a0041
 int id SYM 0x7f0a0042
+int id accountrtxt 0x7f0a00c9
 int id action0 0x7f0a00b9
 int id action_bar 0x7f0a0086
 int id action_bar_activity_content 0x7f0a0001
@@ -893,9 +894,9 @@ int id listMode 0x7f0a002a
 int id list_item 0x7f0a006b
 int id loginButton 0x7f0a00a5
 int id logintxt 0x7f0a00a7
-int id masked 0x7f0a00cb
+int id masked 0x7f0a00ce
 int id media_actions 0x7f0a00bc
-int id message 0x7f0a00c9
+int id message 0x7f0a00cc
 int id middle 0x7f0a003c
 int id mini 0x7f0a005d
 int id multiply 0x7f0a0033
@@ -914,6 +915,8 @@ int id pin 0x7f0a0057
 int id progress_circular 0x7f0a0006
 int id progress_horizontal 0x7f0a0007
 int id radio 0x7f0a007f
+int id registerButton 0x7f0a00ca
+int id registertxt 0x7f0a00cb
 int id right 0x7f0a0054
 int id right_icon 0x7f0a00c4
 int id right_side 0x7f0a00c0
@@ -989,7 +992,7 @@ int id username 0x7f0a00a3
 int id uvMinutesLeftText 0x7f0a00ae
 int id uvMinutesText 0x7f0a00ad
 int id view_offset_helper 0x7f0a0016
-int id visible 0x7f0a00ca
+int id visible 0x7f0a00cd
 int id wide 0x7f0a0026
 int id withText 0x7f0a0047
 int id wrap_content 0x7f0a0039
@@ -1061,11 +1064,12 @@ int layout notification_template_media 0x7f030035
 int layout notification_template_media_custom 0x7f030036
 int layout notification_template_part_chronometer 0x7f030037
 int layout notification_template_part_time 0x7f030038
-int layout select_dialog_item_material 0x7f030039
-int layout select_dialog_multichoice_material 0x7f03003a
-int layout select_dialog_singlechoice_material 0x7f03003b
-int layout support_simple_spinner_dropdown_item 0x7f03003c
-int layout tooltip 0x7f03003d
+int layout registerlayout 0x7f030039
+int layout select_dialog_item_material 0x7f03003a
+int layout select_dialog_multichoice_material 0x7f03003b
+int layout select_dialog_singlechoice_material 0x7f03003c
+int layout support_simple_spinner_dropdown_item 0x7f03003d
+int layout tooltip 0x7f03003e
 int string abc_action_bar_home_description 0x7f070011
 int string abc_action_bar_up_description 0x7f070012
 int string abc_action_menu_overflow_description 0x7f070013
