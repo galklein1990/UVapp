@@ -163,7 +163,6 @@ C:\gal\UVapp\UVapp\bin\Debug\Newtonsoft.Json.xml
 C:\gal\UVapp\UVapp\bin\Debug\System.Collections.Immutable.xml
 C:\gal\UVapp\UVapp\obj\Debug\81\MonoAndroid,Version=v8.1.AssemblyAttributes.cs
 C:\gal\UVapp\UVapp\obj\Debug\81\UVapp.nuget.stamp
-C:\gal\UVapp\UVapp\obj\Debug\81\UVapp.csprojAssemblyReference.cache
 C:\gal\UVapp\UVapp\obj\Debug\81\XbdMerge\Xamarin.GooglePlayServices.Basement.dll.stamp
 C:\gal\UVapp\UVapp\obj\Debug\81\XbdMerge\Xamarin.GooglePlayServices.Tasks.dll.stamp
 C:\gal\UVapp\UVapp\obj\Debug\81\XbdMerge\Xamarin.GooglePlayServices.Base.dll.stamp
@@ -227,6 +226,7 @@ C:\gal\UVapp\UVapp\obj\Debug\81\linksrc\System.Web.Services.pdb
 C:\gal\UVapp\UVapp\obj\Debug\81\linksrc\System.Xml.Linq.pdb
 C:\gal\UVapp\UVapp\obj\Debug\81\linksrc\Mono.Security.pdb
 C:\gal\UVapp\UVapp\obj\Debug\81\linksrc\UVapp.dll.mdb
+C:\gal\UVapp\UVapp\obj\Debug\81\UVapp.csprojAssemblyReference.cache
 C:\gal\UVapp\UVapp\bin\Debug\UVapp.dll.mdb
 C:\gal\UVapp\UVapp\obj\Debug\81\android\assets\UVapp.dll.mdb
 C:\gal\UVapp\UVapp\obj\Debug\81\android\assets\Microsoft.CSharp.pdb

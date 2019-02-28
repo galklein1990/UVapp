@@ -39,7 +39,7 @@ namespace UVapp
         {
             //call cloud fuction to check if user is in database that returns a number describing a situation 
             UserManager userManager = new UserManager();
-
+            User user = new User(username.Text, password.Text);
             int res = userManager.GetUserLoginStatus(username.Text,password.Text);
             switch (res) {
                 case 0:
@@ -60,13 +60,13 @@ namespace UVapp
         return;
         }
 
+      
         public void AddUserFunction(object sender, System.EventArgs e) {
-            string userName = username.Text;
-            string Password = password.Text;
+            User user = new User(username.Text, password.Text);
             username.Text = "";
             password.Text = "";
             txt.Text = "You have now created an account, please try to login";   
-            UserManager.createUser(userName, Password);
+            UserManager.createUser(user);
            // UserManager.UpdateUserExposedField(userName, Password, 5);   // exaple for updating user timeExposed
             return;
         }

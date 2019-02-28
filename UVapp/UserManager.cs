@@ -30,109 +30,40 @@ namespace UVapp
         static private string databaseName = "UsersDB";
         static private string collectionName = "UsersCollection";
         enum LoginStatus {Logged , NotLogged };
-        public class User
-        {
-            [JsonProperty(PropertyName = "id")]
-            public string Id { get; set;}
-            public string UserName { get; set; }
-            public string Password { get; set; }
-            public int TimeExposed { get; set; }
-            public override string ToString()
-            {
-                return JsonConvert.SerializeObject(this);
-            }
-        }
-
-        // ADD THIS PART TO YOUR CODE
-        public async Task GetStartedDemo()
-        {
-            // 
-          //  this.client = new DocumentClient(new Uri(EndpointUrl), PrimaryKey);
-            //await this.client.CreateDatabaseIfNotExistsAsync(new Database { Id = this.databaseName });
-
-          //  await this.client.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri(this.databaseName), new DocumentCollection { Id = this.collectionName });
-            Console.WriteLine("gotHere 2");
-         /*   User dani = new User
-            {
-                UserName = "gal",
-                Password = "1234",
-                TimeExposed = 0
-            };
-      //      await this.CreateUserDocumentIfNotExists(this.databaseName, this.collectionName, dani);
-            */
-            
-            // this.createUser("gal", "1234");
-
-            this.GetUserLoginStatus( "gal", "1234");
-        }
-
-
-
-        public async static void UpdateUserExposedField(string userName, string password ,int exposed)
-        {
-            User gal = new User
-            {
-                Id = (userName + "-" + password),
-                UserName = userName,
-                Password = password,
-                TimeExposed = exposed
-            };
-            await UserManager.client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(databaseName, collectionName, gal.Id), gal);
-
-        }
-
-        public async static void createUser(string userName, string password)
-        {
-            User gal = new User
-            {
-                Id = (userName + "-" + password),
-                UserName = userName,
-                Password = password,
-                TimeExposed = 0
-            };
-            await UserManager.client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(UserManager.databaseName, UserManager.collectionName), gal);
-
-        }
-
-
-        // ADD THIS PART TO YOUR CODE
-        private void WriteToConsoleAndPromptToContinue(string format, params object[] args)
-        {
-            Console.WriteLine(format, args);
-            Console.WriteLine("Press any key to continue ...");
-            Console.ReadKey();
-        }
-
-
-
-
-        /*
-
-        private async Task CreateUserDocumentIfNotExists(string databaseName, string collectionName, User user)
-        {
-            try
-            {
-                await this.client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(databaseName, collectionName), user);
-                //    await this.client.ReadDocumentAsync(UriFactory.CreateDocumentUri(databaseName, collectionName, user.UserName));
-                this.WriteToConsoleAndPromptToContinue("Found {0}", user.UserName);
-            }
-            catch (DocumentClientException de)
-            {
-                if (de.StatusCode == HttpStatusCode.NotFound)
-                {
-                    await this.client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(databaseName, collectionName), user);
-                    this.WriteToConsoleAndPromptToContinue("Created user {0}", user.UserName);
-                }
-                else
-                {
-                    throw;
-                }
-            }
-        }
-
-    */
-
+        //TBD: 7 days of the week exposete , Last day recorded, SkinType, maxUv
         
+        
+        //TBD: create Regestartion page, moced right into mainActivity afterwards
+
+
+        public async static void CreateDB()
+        {
+             await UserManager.client.CreateDatabaseIfNotExistsAsync(new Database { Id = UserManager.databaseName });
+        }
+        public async static void CreateCollection()
+        {
+            await UserManager.client.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri(UserManager.databaseName), new DocumentCollection { Id = UserManager.collectionName });
+        }
+      
+
+
+
+        public async static void UpdateUserExposedField(User user , int exposedInThisIteration)
+        {
+            user.TimeExposed += exposedInThisIteration;
+            await UserManager.client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(databaseName, collectionName, user.Id), user);
+
+        }
+
+        public async static void createUser(User user)
+        {
+         
+            await UserManager.client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(UserManager.databaseName, UserManager.collectionName), user);
+
+        }
+
+
+      
 
         public int GetUserLoginStatus(string userName, string password)
         {

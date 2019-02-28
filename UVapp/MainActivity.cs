@@ -104,28 +104,6 @@ namespace UVapp
 
             //login
             if (!loggedIn) {
-
-          /*      try
-                {
-                    UserManager p = new UserManager();
-                    p.GetStartedDemo().Wait();
-                }
-                catch (Microsoft.Azure.Documents.DocumentClientException de)
-                {
-                    Exception baseException = de.GetBaseException();
-                    Console.WriteLine("{0} error occurred: {1}, Message: {2}", de.StatusCode, de.Message, baseException.Message);
-                }
-                catch (Exception e)
-                {
-                    Exception baseException = e.GetBaseException();
-                    Console.WriteLine("Error: {0}, Message: {1}", e.Message, baseException.Message);
-                }
-                finally
-                {
-                    Console.WriteLine("End of demo, press any key to exit.");
-                    Console.ReadKey();
-                }
-                */
                 Intent loginIntent = new Intent(this, typeof(Login_activity));
                 StartActivity(loginIntent);
             }
