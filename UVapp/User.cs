@@ -15,7 +15,27 @@ using Newtonsoft.Json;
 namespace UVapp
 {
     //TBD: 7 days of the week exposete , Last day recorded, SkinType, maxUv
+    /*
+    class DailyData
+    {
+        public int TimeExposed { get; set; } //counting minutes'
+        public double accumulatedUv;
+        public double maxUv { get; set; }
+        public DateTime date;
+    }
+
     class User
+    {
+        public string Id { get; set; }
+        public string UserName { get; set; }
+        public string Password { get; set; }
+        SkinType skinType;
+
+        DailyData[] recentDaysData;
+    }
+    */
+
+    public class User
     {
         [JsonProperty(PropertyName = "id")]
         public string Id { get; set; }
@@ -23,8 +43,13 @@ namespace UVapp
         public string Password { get; set; }
         public int TimeExposed { get; set; } //counting minutes
         public string Date { get; set; }
-        int skinType { get; set; }
-        int maxUv { get; set; }
+        public int skinType { get; set; }
+        public int maxUv { get; set; }
+
+        public static User deserializeJson(string userJson)
+        {
+            return JsonConvert.DeserializeObject<User>(userJson);
+        }
         public override string ToString()
         {
             return JsonConvert.SerializeObject(this);

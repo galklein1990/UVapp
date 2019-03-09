@@ -22,13 +22,16 @@ using Android;
 using Android.Support.V4.Content;
 using Android.Content.PM;
 using Android.Support.V7.App;
+using System.Collections.Generic;
 
 [assembly: UsesPermission(Android.Manifest.Permission.Bluetooth)]
 [assembly: UsesPermission(Microsoft.Band.BandClientManager.BindBandService)]
 
 namespace UVapp
 {
-    [Activity(Label = "UVapp", MainLauncher = true)]
+
+    [Activity(Label = "UVSafe", ScreenOrientation = ScreenOrientation.Portrait)]
+
     public class MainActivity : AppCompatActivity
     {
 
@@ -68,7 +71,9 @@ namespace UVapp
         long exposureMinutesApp;    // The exposure minutes we measure
         long exposureMinutesBand;   // The exposure minutes the band measures
 
-        SkinType userSkinType = SkinType.Fitz2;
+
+        User user;
+        SkinType userSkinType;
 
         UVSensor uvSensor;
 
@@ -78,6 +83,7 @@ namespace UVapp
         Timer bandConnTimer;
         Timer bandConnTimeoutTimer;
         DateTime lastUvSampleTime;
+        List<Timer> timerList;
 
         bool connLostSinceLastSample = true;
         bool bandConnPreviouslySuccessful = false;
@@ -156,6 +162,14 @@ namespace UVapp
             uvWeatherTimer.Enabled = false;
 
             lastUvSampleTime = DateTime.MinValue;
+
+            string userJson = Intent.GetStringExtra("userJson");
+            if (userJson != null)
+            {
+                user = User.deserializeJson(userJson);
+                userSkinType = (SkinType)user.skinType;
+            }
+
             if (savedInstanceState == null)
             {
                 uvMinutesLeft = userSkinType.UVMinutesToBurn();
@@ -428,8 +442,8 @@ namespace UVapp
         private void BandConnTimeoutElapsed(object sender, System.EventArgs args)
         {
             // TODO: show "Could not connect band" message and show a retry button. Use ConnectBand for the click event
-
-            NotifyUser("Band Connection Lost", "Check your bluetooth and band and reconnect");
+            if (bandConnPreviouslySuccessful)
+                NotifyUser("Band Connection Lost", "Check your bluetooth and band and reconnect");
         }
 
 

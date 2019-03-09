@@ -14,7 +14,7 @@ using Android.Content;
 namespace UVapp
 {
     
-    [Activity(Label = "Login_activity")]
+    [Activity(Label = "UVSafe", MainLauncher = true)]
     public class Login_activity : Activity 
     {
         EditText username;
@@ -37,15 +37,40 @@ namespace UVapp
 
         public void LoginFunction(object sender, System.EventArgs e)
         {
+            User user = UserManager.GetUser(username.Text, password.Text);
+            
+            if (user != null)
+            {
+                txt.Text = "login successful";
+                Intent mainIntent = new Intent(this, typeof(MainActivity));
+                mainIntent.PutExtra("userJson", user.ToString());
+                MainActivity.loggedIn = true;
+                StartActivity(mainIntent);
+            }
+            else
+            {
+                txt.Text = "username or password incorrect , please try again";
+                password.Text = "";
+                username.Text = "";
+            }
+              
+            return;
+        }
+
+        void LoginFunctionOld()
+        {
             //call cloud fuction to check if user is in database that returns a number describing a situation 
+
             UserManager userManager = new UserManager();
             User user = new User(username.Text, password.Text);
-            int res = userManager.GetUserLoginStatus(username.Text,password.Text);
-            switch (res) {
+            int res = userManager.GetUserLoginStatus(username.Text, password.Text);
+
+            switch (res)
+            {
                 case 0:
                     txt.Text = "login successful";
                     Intent mainIntent = new Intent(this, typeof(MainActivity));
-                    mainIntent.PutExtra("name", username.Text);
+                    mainIntent.PutExtra("name", user.UserName);
                     MainActivity.loggedIn = true;
                     StartActivity(mainIntent);
                     break;
@@ -56,10 +81,9 @@ namespace UVapp
                     break;
                 default: break;
             }
-     
-        return;
-        }
 
+            return;
+        }
       
         public void AddUserFunction(object sender, System.EventArgs e) {
             /*  User user = new User(username.Text, password.Text);
@@ -69,7 +93,6 @@ namespace UVapp
               UserManager.createUser(user);
              // UserManager.UpdateUserExposedField(userName, Password, 5);   // exaple for updating user timeExposed
              */
-            txt.Text = "login successful";
             Intent registerIntent = new Intent(this, typeof(Register_activity));
             //registerIntent.PutExtra("name", username.Text);
             //MainActivity.loggedIn = true;

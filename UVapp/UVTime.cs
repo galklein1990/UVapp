@@ -16,23 +16,6 @@ namespace UVapp
 {
     public class UVvalues
     {
-        /*
-        private double UVMinutesLeft;
-        public UVTime(SkinType skinType)
-        {
-            UVMinutesLeft = skinType.UVMinutesToBurn();
-        }
-
-        public void passTimeUnderUV(double minutes, long uviNum)
-        {
-            UVMinutesLeft -= minutes * uviNum;
-        }
-
-        public double getUVMinutesLeft()
-        {
-            return UVMinutesLeft;
-        }
-        */
 
 
         /* UV descriptions according to https://www.epa.gov/sunsafety/uv-index-scale-1
@@ -131,7 +114,7 @@ namespace UVapp
          */
 
         /*
-         * We measure UV doses in UV minutes. UV minutes = minutes * UVI.
+         * We measure UV doses in "UV minutes". UV minutes = minutes * UVI.
          * So 10 minutes spent under UVI 1 are 10 UV minutes but 10 minutes spent under UVI 3 are 30 UV minutes.
          * 
          * Each skin type has a minimal dose of UV Minutes before it burns

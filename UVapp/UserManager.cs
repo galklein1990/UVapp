@@ -44,13 +44,10 @@ namespace UVapp
         {
             await UserManager.client.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri(UserManager.databaseName), new DocumentCollection { Id = UserManager.collectionName });
         }
-      
 
-
-
-        public async static void UpdateUserExposedField(User user , int exposedInThisIteration)
+        public async static void UpdateUserExposedField(User user , int exposedMinutes)
         {
-            user.TimeExposed += exposedInThisIteration;
+            user.TimeExposed = exposedMinutes;
             await UserManager.client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(databaseName, collectionName, user.Id), user);
 
         }
@@ -63,8 +60,26 @@ namespace UVapp
         }
 
 
-      
+        public static User GetUser(string userName, string password)
+        {
+            FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
 
+            IQueryable<User> userQuery = UserManager.client.CreateDocumentQuery<User>(
+                    UriFactory.CreateDocumentCollectionUri(UserManager.databaseName, UserManager.collectionName), queryOptions)
+                    .Where(f => (f.UserName == userName && f.Password == password));
+
+            Console.WriteLine("Running direct SQL query...");
+            foreach (User user in userQuery)
+            {
+                Console.WriteLine("\tRead and found user {0}", user);
+                return user;
+            }
+            
+            Console.WriteLine("we did nor found user!");
+
+            return null;
+        }
+    
         public int GetUserLoginStatus(string userName, string password)
         {
             // Set some common query options

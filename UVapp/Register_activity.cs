@@ -47,21 +47,21 @@ namespace UVapp
             switch (res)
             {
                 case 0:
-                    txt.Text = "user allready registered";
+                    txt.Text = "User already registered!";
                     password.Text = "";
                     username.Text = "";
                     break;
                 case 1:
                    
-                    UserManager.createUser(user);
-                    Intent mainIntent = new Intent(this, typeof(MainActivity));
-                    mainIntent.PutExtra("name", username.Text);
-                    txt.Text = "successfully registeration!";
+                    //UserManager.createUser(user);
+                    Intent skinTypeIntent = new Intent(this, typeof(SkintypeActivity));
+                    skinTypeIntent.PutExtra("userJson", user.ToString());
+                    txt.Text = "Registration successful!";
                     password.Text = "";
                     username.Text = "";
 
                     MainActivity.loggedIn = true;
-                    StartActivity(mainIntent);
+                    StartActivity(skinTypeIntent);
                     break;
                 default: break;
             }
