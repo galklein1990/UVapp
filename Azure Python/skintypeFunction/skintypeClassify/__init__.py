@@ -5,29 +5,64 @@ import azure.functions as func
 import cv2
 import numpy as np
 import math
+import json
+import base64
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
-    img = createSolidColorImg((0,0,255))
-    skintype = classifySkinTypeFromImg(img)
-
-    ita = req.params.get('ita')
-    if not ita:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            pass
-        else:
-            ita = req_body.get('ita')
-
-    if ita:
-        return func.HttpResponse(f"Skin type {classifySkintypeITA(int(ita))}! Also classified black image as {skintype}")
-    else:
+    req_body = req.get_body()
+    if not req_body:
         return func.HttpResponse(
-             "Please pass a name on the query string or in the request body",
-             status_code=400
+            "Image missing",
+            status_code=400
         )
+    #jsonBody = req.get_json()
+    #logging.info(f"Json {jsonBody[0:50]}")
+
+    logging.info(f"len(req_body) = {len(req_body)} First bytes {req_body[0:50]}")
+
+    decoded = base64.b64decode(req_body)
+    logging.info(f"Decoded {decoded[0:50]}")
+
+    #try:
+    return classifySkintypeBytesImg(decoded)
+    #except Exception as ex:
+        #logging.info("failed raw bytes")
+
+    '''
+    decoded = base64.b64decode(req_body)
+    
+    try:
+        return classifySkintypeBytesImg(decoded)
+    except Exception as ex:
+        logging.info("failed raw bytes")
+        
+
+    return func.HttpResponse(
+        "Failed to decode",
+        status_code=400
+    )
+    '''
+
+
+def classifySkintypeBytesImg(data) -> func.HttpResponse:
+
+
+    npArrayImg = np.frombuffer(data, dtype="uint8")
+
+    logging.info(f"len(npArrayImg)={len(npArrayImg)}, first bytes: {npArrayImg[0:50]}")
+
+
+    image = cv2.imdecode(npArrayImg, cv2.IMREAD_COLOR)
+
+    skintype, color = classifySkinTypeFromImg(image)
+
+    classifiedColor = {"skinType": skintype}
+
+    responseBody = json.dumps(classifiedColor)
+
+    return func.HttpResponse(body=responseBody)
 
 
 def switchBR(img):

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 
 using Android.App;
@@ -16,6 +17,7 @@ using Android.Widget;
 using Java.IO;
 using Java.Text;
 using Java.Util;
+using Newtonsoft.Json;
 
 namespace UVapp
 {
@@ -29,15 +31,18 @@ namespace UVapp
         TextView resultTextView;
 
         Button okButton;
+        Button takePhotoButton;
 
         User user;
+
+        HttpClient httpClient = new HttpClient();
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.SkintypeActivityLayout);
 
-            Button takePhotoButton = FindViewById<Button>(Resource.Id.takePhotoButton);
+            takePhotoButton = FindViewById<Button>(Resource.Id.takePhotoButton);
             takePhotoButton.Click += OnClickTakePhoto;
             okButton = FindViewById<Button>(Resource.Id.okButton);
             okButton.Click += OnClickOk;
@@ -46,7 +51,6 @@ namespace UVapp
             resultImageView = FindViewById<ImageView>(Resource.Id.resultImg);
 
             user = User.deserializeJson(Intent.GetStringExtra("userJson"));
-
         }
 
         private void OnClickOk(object sender, EventArgs e)
@@ -83,6 +87,35 @@ namespace UVapp
             }
         }
 
+        private async void SkintypeClassificationProcess(Bitmap image)
+        {
+            RunOnUiThread(() => { resultTextView.Text = $"Identifying skin type..."; });
+                
+            HttpResponseMessage skintypeResponse = await SkintypeClassification.serverClassifyImage(image, httpClient);
+            if (skintypeResponse.IsSuccessStatusCode)
+            {
+                var responseContent = await skintypeResponse.Content.ReadAsStringAsync();
+
+                SkintypeClassification.ClassifiedColor deserialized = JsonConvert.DeserializeObject<SkintypeClassification.ClassifiedColor>(responseContent);
+                SkinType skinType = (SkinType)deserialized.skinType;
+                user.skinType = deserialized.skinType;
+
+                RunOnUiThread(() => {
+                    resultTextView.Text = $"Your skin type is {skinType.RomanNumeralsName()} where I is palest and VI is darkest";
+                    takePhotoButton.Text = "Retake";
+                    okButton.Visibility = ViewStates.Visible;
+                    okButton.Clickable = true;
+                });
+            }
+            else
+            {
+                RunOnUiThread(() =>
+                {
+                    resultTextView.Text = $"Error: {skintypeResponse.ReasonPhrase}";
+                });
+            }   
+        }
+
         protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
         {
             if (requestCode == takePictureRequestCode && resultCode == Result.Ok)
@@ -113,14 +146,9 @@ namespace UVapp
                     Bitmap bitmap = Bitmap.CreateScaledBitmap(fullsize_bitmap, newWidth, newHeight, false);
                     fullsize_bitmap.Recycle();  // Yes, we are freeing memory, like the good ol' days of C
 
-                    user.skinType = (int)SkintypeClassification.classifyImage(bitmap);
-
                     resultImageView.SetImageBitmap(bitmap);
-                    resultTextView.Text = $"Height: {bitmap.Height}, Width: {bitmap.Width}, ByteCount in kb: {(int)bitmap.ByteCount / 1000}";
-                    resultTextView.Text += $"\nSkin type {user.skinType}";
-
-                    okButton.Visibility = ViewStates.Visible;
-                    okButton.Clickable = true;
+                    SkintypeClassificationProcess(bitmap);
+                    
                 }
                 catch (IOException e)
                 {

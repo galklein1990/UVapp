@@ -10,15 +10,48 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using System.IO;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using static Android.Graphics.ColorSpace;
+using Newtonsoft.Json;
 
 namespace UVapp
 {
+    
+
     class SkintypeClassification
     {
+        
+        private static readonly Uri funcUri = new Uri("https://uvsafe-skin.azurewebsites.net/api/skintypeClassify?code=kcz53oGm8HnLIpbaAZqR/UQOzKicu2kK5VS1QOPyP0ayNVthdJ7zpA==");
 
-        public static SkinType classifyImage(Bitmap image)
+        public static async Task<HttpResponseMessage> serverClassifyImage(Bitmap image, HttpClient httpClient)
         {
-            return SkinType.Fitz2;
+            
+            MemoryStream encodedImageStream = new MemoryStream();
+            
+            image.Compress(Bitmap.CompressFormat.Jpeg, 100, encodedImageStream);
+
+            // TODO: Check how the Python decodes a string as a byte array.
+            /* TODO: Try other compressions or conversions
+             *      base64
+             *      PNG
+             *      buffer pixels
+             *      image.CopyPixelsFromBuffer
+             */
+            byte[] byteArray = encodedImageStream.ToArray();
+
+            var content = new StringContent(Convert.ToBase64String(byteArray));
+            //content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+            HttpResponseMessage response = await httpClient.PostAsync(funcUri, content);
+            return response; 
+        }
+
+        public class ClassifiedColor
+        {
+            public int skinType;
         }
     }
+
+    
 }
