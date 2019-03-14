@@ -5753,6 +5753,9 @@ namespace UVapp
 			// aapt resource value: 0x7F050002
 			public const int Theme_Custom = 2131034114;
 			
+			// aapt resource value: 0x7F050003
+			public const int Theme_Custom1 = 2131034115;
+			
 			// aapt resource value: 0x7F160126
 			public const int Theme_Design = 2132148518;
 			

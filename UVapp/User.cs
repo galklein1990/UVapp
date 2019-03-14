@@ -41,7 +41,8 @@ namespace UVapp
         public string Id { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
-        public int TimeExposed { get; set; } //counting minutes
+        public long TimeExposed { get; set; } //counting minutes
+        public double accumulatedUV { get; set; }   // In minutes*UVI
         public string Date { get; set; }
         public int skinType { get; set; }
         public int maxUv { get; set; }
@@ -58,24 +59,28 @@ namespace UVapp
         {
             this.UserName = userName;
             this.Password = password;
-            this.Date = getDateString();    //DateTime.Now.ToString()
+            this.Date = getTodayDateString();    //DateTime.Now.ToString()
             this.Id = userName + "-" + password + "-" + this.Date;
             this.skinType = (int)skinType;
+            this.accumulatedUV = 0;
+
             this.maxUv = 0;
         }
         public User(string userName, string password)       // TBD: just for now, for debugging purposes
         {
             this.UserName = userName;
             this.Password = password;
-            this.Date = getDateString();
+            this.Date = getTodayDateString();
             this.Id = userName + "-" + password + "-" + this.Date;
             this.skinType = 0;
+            this.accumulatedUV = 0;
             this.maxUv = 0;
         }
         public User()       // TBD: just for now, for debugging purposes
         {
         }
-        public string getDateString()
+
+        public static string getTodayDateString()
         {
             string[] dateArray = DateTime.Now.ToString().Split(' ')[0].Split('/');
             string dateStr = "";

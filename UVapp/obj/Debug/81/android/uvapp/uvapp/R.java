@@ -3868,6 +3868,7 @@ containing a value of this type.
         public static final int Theme_AppCompat_Light_NoActionBar=0x7f0c0105;
         public static final int Theme_AppCompat_NoActionBar=0x7f0c0106;
         public static final int Theme_Custom=0x7f0c0180;
+        public static final int Theme_Custom1=0x7f0c0181;
         public static final int Theme_Design=0x7f0c0169;
         public static final int Theme_Design_BottomSheetDialog=0x7f0c016a;
         public static final int Theme_Design_Light=0x7f0c016b;

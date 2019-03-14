@@ -131,14 +131,14 @@ namespace UVapp
          */
         public static double MinutesToBurn(this SkinType skinType, double uviNum)
         {
-            return skinType.UVMinutesToBurn() / uviNum;
+            return skinType.UVRadiationToBurn() / uviNum;
         }
 
         /** 
          * Returns the UV minutes to burn for each skin type
          * Chosen or averaged from within the skin type's range
          */
-        public static double UVMinutesToBurn(this SkinType skinType)
+        public static double UVRadiationToBurn(this SkinType skinType)
         {
             // 25% into the range from the lower bound
             return (3 * skinType.LowBoundRangeUVMinutes() + skinType.UpBoundRangeUVMinutes()) / 4;

@@ -3174,13 +3174,13 @@ containing a value of this type.
         public static int abc_textfield_search_material=0x7f020051;
         public static int abc_vector_test=0x7f020052;
         public static int avd_hide_password=0x7f020053;
-        public static int avd_hide_password_1=0x7f02007f;
-        public static int avd_hide_password_2=0x7f020080;
-        public static int avd_hide_password_3=0x7f020081;
+        public static int avd_hide_password_1=0x7f020080;
+        public static int avd_hide_password_2=0x7f020081;
+        public static int avd_hide_password_3=0x7f020082;
         public static int avd_show_password=0x7f020054;
-        public static int avd_show_password_1=0x7f020082;
-        public static int avd_show_password_2=0x7f020083;
-        public static int avd_show_password_3=0x7f020084;
+        public static int avd_show_password_1=0x7f020083;
+        public static int avd_show_password_2=0x7f020084;
+        public static int avd_show_password_3=0x7f020085;
         public static int common_full_open_on_phone=0x7f020055;
         public static int common_google_signin_btn_icon_dark=0x7f020056;
         public static int common_google_signin_btn_icon_dark_focused=0x7f020057;
@@ -3217,12 +3217,13 @@ containing a value of this type.
         public static int notification_bg_normal=0x7f020076;
         public static int notification_bg_normal_pressed=0x7f020077;
         public static int notification_icon_background=0x7f020078;
-        public static int notification_template_icon_bg=0x7f02007d;
-        public static int notification_template_icon_low_bg=0x7f02007e;
+        public static int notification_template_icon_bg=0x7f02007e;
+        public static int notification_template_icon_low_bg=0x7f02007f;
         public static int notification_tile_bg=0x7f020079;
         public static int notify_panel_notification_icon_bg=0x7f02007a;
-        public static int tooltip_frame_dark=0x7f02007b;
-        public static int tooltip_frame_light=0x7f02007c;
+        public static int sun=0x7f02007b;
+        public static int tooltip_frame_dark=0x7f02007c;
+        public static int tooltip_frame_light=0x7f02007d;
     }
     public static final class id {
         public static int ALT=0x7f0b003d;
@@ -3576,6 +3577,7 @@ containing a value of this type.
         public static int path_password_eye_mask_visible=0x7f080035;
         public static int path_password_strike_through=0x7f080036;
         public static int search_menu_title=0x7f080022;
+        public static int skintype_photo_instructions=0x7f08003b;
         public static int status_bar_notification_info_overflow=0x7f080037;
     }
     public static final class style {

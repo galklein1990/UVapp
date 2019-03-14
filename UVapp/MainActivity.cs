@@ -62,15 +62,17 @@ namespace UVapp
 
         double currentUV;
         double weatherCurrentUV;
+        double peakUV;
+        
+        double uvRadiationAccumulated = 0;  // The total accumulated radiation the user was exposed to in minutes*UVI
+        double allowedUvRadiationLeft;         // The amount of additional radiation the user can safely be exposed to in minutes*UVI
+        long exposureMinutesApp;    // The exposure minutes the app measures by itself - this is kept for testing but currently not used for any calculations
+        long exposureMinutesBand;   // The exposure minutes the band measures - THE EXPOSURE TIME WE ACTUALLY USE
+
         double uvBandSamplingIntervalSeconds = 60;
         double bandConnectionTimeoutSeconds = 30;
         double locationSampleIntervalMinutes = 10;
         double weatherRequestIntervalMinutes = 30;  // It's actually limited to 50 requests per day
-        double uvMinutesSpent = 0;
-        double uvMinutesLeft;
-        long exposureMinutesApp;    // The exposure minutes we measure
-        long exposureMinutesBand;   // The exposure minutes the band measures
-
 
         User user;
         SkinType userSkinType;
@@ -82,8 +84,8 @@ namespace UVapp
         Timer updateLocationTimer;
         Timer bandConnTimer;
         Timer bandConnTimeoutTimer;
+        Timer saveDataToDBTimer;
         DateTime lastUvSampleTime;
-        List<Timer> timerList;
 
         bool connLostSinceLastSample = true;
         bool bandConnPreviouslySuccessful = false;
@@ -134,6 +136,10 @@ namespace UVapp
             connectBandButton.Click += ConnectBand;
 
             fusedLocationProviderClient = LocationServices.GetFusedLocationProviderClient(this);
+            
+            /* Initialize timers, the elapsed callbacks are defined below
+             * In general, once the band successfully connects, the 
+             */ 
 
             bandConnTimer = new Timer(1000);
             bandConnTimer.Elapsed += ConnectBand;
@@ -161,6 +167,11 @@ namespace UVapp
             uvWeatherTimer.AutoReset = true;
             uvWeatherTimer.Enabled = false;
 
+            saveDataToDBTimer = new Timer(MinutesToMS(3));
+            saveDataToDBTimer.Elapsed += saveDataToDB;
+            saveDataToDBTimer.AutoReset = true;
+            saveDataToDBTimer.Enabled = false;
+
             lastUvSampleTime = DateTime.MinValue;
 
             string userJson = Intent.GetStringExtra("userJson");
@@ -168,22 +179,34 @@ namespace UVapp
             {
                 user = User.deserializeJson(userJson);
                 userSkinType = (SkinType)user.skinType;
-            }
-
-            if (savedInstanceState == null)
-            {
-                uvMinutesLeft = userSkinType.UVMinutesToBurn();
+                if (user.Date == User.getTodayDateString())
+                {
+                    uvRadiationAccumulated = user.accumulatedUV;
+                    exposureMinutesBand = user.TimeExposed;
+                    allowedUvRadiationLeft = userSkinType.UVRadiationToBurn() - uvRadiationAccumulated;
+                }
             }
             else
             {
-                uvMinutesLeft = savedInstanceState.GetDouble("uvMinutesLeft", userSkinType.UVMinutesToBurn());
+                if (savedInstanceState == null)
+                {
+                    allowedUvRadiationLeft = userSkinType.UVRadiationToBurn();
+                    uvRadiationAccumulated = 0;
+                }
+                else
+                {
+                    allowedUvRadiationLeft = savedInstanceState.GetDouble("uvMinutesLeft", userSkinType.UVRadiationToBurn());
+                    uvRadiationAccumulated = savedInstanceState.GetDouble("uvMinutesSpent");
+                    exposureMinutesBand = savedInstanceState.GetInt("exposureMinutesBand");
+                }
             }
+            
 
             samplingIntervalText.Text = ""; //$"Sampling interval: {samplingIntervalMinutes} minutes";
             currUVText.Text = "";
             currUVWeatherText.Text = "";
             bandConnText.Text = "";
-            uvMinutesText.Text = uvMinutesTextBase + $"{(int)uvMinutesSpent} ({(int)(uvMinutesSpent/userSkinType.UVMinutesToBurn())}%)";
+            uvMinutesText.Text = uvMinutesTextBase + $"{(int)uvRadiationAccumulated} ({(int)(uvRadiationAccumulated/userSkinType.UVRadiationToBurn())}%)";
             currentlySamplingText.Text = "";
             skinColorText.Text = skinColorTextBase + userSkinType.RomanNumeralsName();
             timeYouCanSpendText.Text = timeYouCanSpendTextBase + "Safe";
@@ -198,8 +221,8 @@ namespace UVapp
             base.OnSaveInstanceState(outState);
 
             outState.PutDouble("currentUV", currentUV);
-            outState.PutDouble("uvMinutesSpent", uvMinutesSpent);
-            outState.PutDouble("uvMinutesLeft", uvMinutesLeft);
+            outState.PutDouble("uvMinutesSpent", uvRadiationAccumulated);
+            outState.PutDouble("uvMinutesLeft", allowedUvRadiationLeft);
             outState.PutLong("exposureMinutesApp", exposureMinutesApp);
             outState.PutLong("exposureMinutesBand", exposureMinutesBand);
         }
@@ -209,8 +232,8 @@ namespace UVapp
             base.OnRestoreInstanceState(savedInstanceState);
 
             currentUV = savedInstanceState.GetDouble("currentUV");
-            uvMinutesSpent = savedInstanceState.GetDouble("uvMinutesSpent");
-            uvMinutesLeft = savedInstanceState.GetDouble("uvMinutesLeft");
+            uvRadiationAccumulated = savedInstanceState.GetDouble("uvMinutesSpent");
+            allowedUvRadiationLeft = savedInstanceState.GetDouble("uvMinutesLeft");
             exposureMinutesApp = savedInstanceState.GetLong("exposureMinutesApp");
             exposureMinutesBand = savedInstanceState.GetLong("exposureMinutesBand");
         }
@@ -222,7 +245,11 @@ namespace UVapp
 
             if (pairedBands.Length < 1)
             {
-                bandConnText.Text = "Band not paired!";
+                RunOnUiThread(() =>
+                {
+                    bandConnText.Text = "Band not paired!";
+                });
+                
                 return;
             }
 
@@ -277,12 +304,18 @@ namespace UVapp
                     connState = await bandClient.ConnectTaskAsync();
                     if (connState != ConnectionState.Connected)
                     {
-                        bandConnText.Text += "\nBand connection failed";
+                        RunOnUiThread(() =>
+                        {
+                            bandConnText.Text += "\nBand connection failed";
+                        });
                     }
                 }
                 catch(BandException ex)
                 {
-                    bandConnText.Text = "Band Connection Error: " + ex.Message;
+                    RunOnUiThread(() =>
+                    {
+                        bandConnText.Text = "Band Connection Error: " + ex.Message;
+                    });
                 }
             } 
         }
@@ -313,7 +346,9 @@ namespace UVapp
                     exposureMinutesBand = args.SensorReading.UVExposureToday;
                     long exposureSinceLastSample = exposureMinutesBand - prevExposureMinutes;
 
-                    // currentUV was still not updated, the UV from the previous sample is used
+                    currentUV = uviNum;
+
+                    // This updates our internal time measure which is currently not used
                     if (!connLostSinceLastSample)
                     {
                         TimeSpan timeSinceLastSample = DateTime.Now - lastUvSampleTime;
@@ -323,10 +358,12 @@ namespace UVapp
                         
                     }
 
+
+                    // Update accumulated radiation
                     if (currentUV != 0)
                     {
-                        uvMinutesSpent += currentUV * exposureSinceLastSample;
-                        uvMinutesLeft -= currentUV * exposureSinceLastSample;
+                        uvRadiationAccumulated += currentUV * exposureSinceLastSample;
+                        allowedUvRadiationLeft -= currentUV * exposureSinceLastSample;
                     }
                     else
                     {
@@ -334,36 +371,43 @@ namespace UVapp
                          * Note that exposureSinceLastSample may be 0 if there
                          * was no exposure
                          */
-                        uvMinutesSpent += weatherCurrentUV * exposureSinceLastSample;
-                        uvMinutesLeft -= weatherCurrentUV * exposureSinceLastSample;
+                        uvRadiationAccumulated += weatherCurrentUV * exposureSinceLastSample;
+                        allowedUvRadiationLeft -= weatherCurrentUV * exposureSinceLastSample;
                     }
 
-                    currentUV = uviNum;
+                    
                     connLostSinceLastSample = false;
                     lastUvSampleTime = DateTime.Now;
 
+                    if (peakUV < currentUV)
+                    {
+                        peakUV = currentUV;
+                    }
+
                     int roundedUV = (int)Math.Round(currentUV, 0, MidpointRounding.AwayFromZero);
 
+                    // Send notification for first UV detected
                     if (currentUV > 0 && !firstExposureNotificationSent) {
                         NotifyUser($"UV level of {roundedUV} detected!", $"If you are going to be exposed to the sun for more than {FormatTimeAmountForUser(userSkinType.MinutesToBurn(currentUV))}, wear protective clothing, hat and UV-blocking sunglasses and apply SPF 30+ sunscreen");
                         firstExposureNotificationSent = true;
                     }
 
-                    if (uvMinutesLeft < userSkinType.UVMinutesToBurn()/2 && !halfAllowedUVnotificationSent)
+                    // Send notification for exposure to half of the allowed radiation
+                    if (allowedUvRadiationLeft < userSkinType.UVRadiationToBurn()/2 && !halfAllowedUVnotificationSent)
                     {
-                        NotifyUser("You've been exposed to over 50% of your allowed UV today!", $"Try to avoid additional sun exposure and make sure to apply SPF 30+ sunscreen and wear protective clothing, especially if you are going to be exposed for more than { FormatTimeAmountForUser(uvMinutesLeft / currentUV)}");
+                        NotifyUser("You've been exposed to over 50% of your allowed UV today!", $"Try to avoid additional sun exposure and make sure to apply SPF 30+ sunscreen and wear protective clothing, especially if you are going to be exposed for more than { FormatTimeAmountForUser(allowedUvRadiationLeft / currentUV)}");
                         halfAllowedUVnotificationSent = true;
                     }
 
                     RunOnUiThread(() => {      // To access the text, you need to run on ui thread
                         currUVText.Text = currUVTextBase + $"{roundedUV} ({UVvalues.UvIntToEnum(roundedUV)})";
-                        uvMinutesText.Text = uvMinutesTextBase + $"{(int)uvMinutesSpent} ({(int)(uvMinutesSpent*100 / userSkinType.UVMinutesToBurn())}%)";
+                        uvMinutesText.Text = uvMinutesTextBase + $"{(int)uvRadiationAccumulated} ({(int)(uvRadiationAccumulated*100 / userSkinType.UVRadiationToBurn())}%)";
                         //uvMinutesLeftText.Text = uvMinutesLeftTextBase + (int)uvMinutesLeft;
 
                         if (currentUV != 0)
                         {
 
-                            timeYouCanSpendText.Text = timeYouCanSpendTextBase + FormatTimeAmountForUser(uvMinutesLeft / currentUV);
+                            timeYouCanSpendText.Text = timeYouCanSpendTextBase + FormatTimeAmountForUser(allowedUvRadiationLeft / currentUV);
                         }
                         else
                         {
@@ -446,6 +490,19 @@ namespace UVapp
                 NotifyUser("Band Connection Lost", "Check your bluetooth and band and reconnect");
         }
 
+        private void saveDataToDB(object sender, System.EventArgs args)
+        {
+            if (currentUV == 0)
+            {
+                // Don't save if there is no exposure to prevent
+                saveDataToDBTimer.Enabled = false;
+            }
+            user.TimeExposed = exposureMinutesBand;
+            user.accumulatedUV = uvRadiationAccumulated;
+
+            UserManager.UpdateUser(user);
+        }
+        
 
         private async Task<string> GetEnumUVRecommendation(UVIndexLevel uvi)
         {

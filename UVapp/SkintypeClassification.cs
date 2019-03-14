@@ -32,13 +32,6 @@ namespace UVapp
             
             image.Compress(Bitmap.CompressFormat.Jpeg, 100, encodedImageStream);
 
-            // TODO: Check how the Python decodes a string as a byte array.
-            /* TODO: Try other compressions or conversions
-             *      base64
-             *      PNG
-             *      buffer pixels
-             *      image.CopyPixelsFromBuffer
-             */
             byte[] byteArray = encodedImageStream.ToArray();
 
             var content = new StringContent(Convert.ToBase64String(byteArray));

@@ -20,7 +20,7 @@
     <activity android:label="UVSafe" android:screenOrientation="portrait" android:name="md5a324db91cfe94c0569a2d42a42e99e15.MainActivity" />
     <service android:name="md5a324db91cfe94c0569a2d42a42e99e15.NotificationService" />
     <activity android:label="Register_activity" android:name="md5a324db91cfe94c0569a2d42a42e99e15.Register_activity" />
-    <activity android:label="SkintypeActivity" android:name="md5a324db91cfe94c0569a2d42a42e99e15.SkintypeActivity" />
+    <activity android:label="Skin Type" android:screenOrientation="portrait" android:name="md5a324db91cfe94c0569a2d42a42e99e15.SkintypeActivity" />
     <provider android:name="mono.MonoRuntimeProvider" android:exported="false" android:initOrder="2147483647" android:authorities="UVapp.UVapp.mono.MonoRuntimeProvider.__mono_init__" />
     <!--suppress ExportedReceiver-->
     <receiver android:name="mono.android.Seppuku">

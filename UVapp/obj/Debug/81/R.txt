@@ -1424,6 +1424,7 @@ int style Theme_AppCompat_Light_DialogWhenLarge 0x7f0c0104
 int style Theme_AppCompat_Light_NoActionBar 0x7f0c0105
 int style Theme_AppCompat_NoActionBar 0x7f0c0106
 int style Theme_Custom 0x7f0c0180
+int style Theme_Custom1 0x7f0c0181
 int style Theme_Design 0x7f0c0169
 int style Theme_Design_BottomSheetDialog 0x7f0c016a
 int style Theme_Design_Light 0x7f0c016b

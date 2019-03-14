@@ -6,6 +6,7 @@ using System.Text;
 
 using Android.App;
 using Android.Content;
+using Android.Content.PM;
 using Android.Graphics;
 using Android.OS;
 using Android.Provider;
@@ -21,7 +22,7 @@ using Newtonsoft.Json;
 
 namespace UVapp
 {
-    [Activity(Label = "SkintypeActivity")]
+    [Activity(Label = "Skin Type", ScreenOrientation = ScreenOrientation.Portrait)]
     public class SkintypeActivity : AppCompatActivity
     {
         static readonly int takePictureRequestCode = 1;
@@ -145,6 +146,7 @@ namespace UVapp
 
                     Bitmap bitmap = Bitmap.CreateScaledBitmap(fullsize_bitmap, newWidth, newHeight, false);
                     fullsize_bitmap.Recycle();  // Yes, we are freeing memory, like the good ol' days of C
+                   
 
                     resultImageView.SetImageBitmap(bitmap);
                     SkintypeClassificationProcess(bitmap);

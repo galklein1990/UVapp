@@ -52,6 +52,13 @@ namespace UVapp
 
         }
 
+        public async static void UpdateUser(User user)
+        {
+            user.Date = User.getTodayDateString();
+            
+            await UserManager.client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(databaseName, collectionName, user.Id), user);
+        }
+
         public async static void createUser(User user)
         {
          
