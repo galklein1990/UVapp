@@ -1274,44 +1274,44 @@ namespace UVapp
 		public partial class Color
 		{
 			
-			// aapt resource value: 0x7f09004f
-			public const int abc_background_cache_hint_selector_material_dark = 2131296335;
-			
-			// aapt resource value: 0x7f090050
-			public const int abc_background_cache_hint_selector_material_light = 2131296336;
-			
-			// aapt resource value: 0x7f090051
-			public const int abc_btn_colored_borderless_text_material = 2131296337;
-			
 			// aapt resource value: 0x7f090052
-			public const int abc_btn_colored_text_material = 2131296338;
+			public const int abc_background_cache_hint_selector_material_dark = 2131296338;
 			
 			// aapt resource value: 0x7f090053
-			public const int abc_color_highlight_material = 2131296339;
+			public const int abc_background_cache_hint_selector_material_light = 2131296339;
 			
 			// aapt resource value: 0x7f090054
-			public const int abc_hint_foreground_material_dark = 2131296340;
+			public const int abc_btn_colored_borderless_text_material = 2131296340;
 			
 			// aapt resource value: 0x7f090055
-			public const int abc_hint_foreground_material_light = 2131296341;
+			public const int abc_btn_colored_text_material = 2131296341;
+			
+			// aapt resource value: 0x7f090056
+			public const int abc_color_highlight_material = 2131296342;
+			
+			// aapt resource value: 0x7f090057
+			public const int abc_hint_foreground_material_dark = 2131296343;
+			
+			// aapt resource value: 0x7f090058
+			public const int abc_hint_foreground_material_light = 2131296344;
 			
 			// aapt resource value: 0x7f090008
 			public const int abc_input_method_navigation_guard = 2131296264;
 			
-			// aapt resource value: 0x7f090056
-			public const int abc_primary_text_disable_only_material_dark = 2131296342;
-			
-			// aapt resource value: 0x7f090057
-			public const int abc_primary_text_disable_only_material_light = 2131296343;
-			
-			// aapt resource value: 0x7f090058
-			public const int abc_primary_text_material_dark = 2131296344;
-			
 			// aapt resource value: 0x7f090059
-			public const int abc_primary_text_material_light = 2131296345;
+			public const int abc_primary_text_disable_only_material_dark = 2131296345;
 			
 			// aapt resource value: 0x7f09005a
-			public const int abc_search_url_text = 2131296346;
+			public const int abc_primary_text_disable_only_material_light = 2131296346;
+			
+			// aapt resource value: 0x7f09005b
+			public const int abc_primary_text_material_dark = 2131296347;
+			
+			// aapt resource value: 0x7f09005c
+			public const int abc_primary_text_material_light = 2131296348;
+			
+			// aapt resource value: 0x7f09005d
+			public const int abc_search_url_text = 2131296349;
 			
 			// aapt resource value: 0x7f090009
 			public const int abc_search_url_text_normal = 2131296265;
@@ -1322,29 +1322,29 @@ namespace UVapp
 			// aapt resource value: 0x7f09000b
 			public const int abc_search_url_text_selected = 2131296267;
 			
-			// aapt resource value: 0x7f09005b
-			public const int abc_secondary_text_material_dark = 2131296347;
-			
-			// aapt resource value: 0x7f09005c
-			public const int abc_secondary_text_material_light = 2131296348;
-			
-			// aapt resource value: 0x7f09005d
-			public const int abc_tint_btn_checkable = 2131296349;
-			
 			// aapt resource value: 0x7f09005e
-			public const int abc_tint_default = 2131296350;
+			public const int abc_secondary_text_material_dark = 2131296350;
 			
 			// aapt resource value: 0x7f09005f
-			public const int abc_tint_edittext = 2131296351;
+			public const int abc_secondary_text_material_light = 2131296351;
 			
 			// aapt resource value: 0x7f090060
-			public const int abc_tint_seek_thumb = 2131296352;
+			public const int abc_tint_btn_checkable = 2131296352;
 			
 			// aapt resource value: 0x7f090061
-			public const int abc_tint_spinner = 2131296353;
+			public const int abc_tint_default = 2131296353;
 			
 			// aapt resource value: 0x7f090062
-			public const int abc_tint_switch_track = 2131296354;
+			public const int abc_tint_edittext = 2131296354;
+			
+			// aapt resource value: 0x7f090063
+			public const int abc_tint_seek_thumb = 2131296355;
+			
+			// aapt resource value: 0x7f090064
+			public const int abc_tint_spinner = 2131296356;
+			
+			// aapt resource value: 0x7f090065
+			public const int abc_tint_switch_track = 2131296357;
 			
 			// aapt resource value: 0x7f09000c
 			public const int accent_material_dark = 2131296268;
@@ -1388,8 +1388,17 @@ namespace UVapp
 			// aapt resource value: 0x7f090019
 			public const int button_material_light = 2131296281;
 			
-			// aapt resource value: 0x7f090063
-			public const int common_google_signin_btn_text_dark = 2131296355;
+			// aapt resource value: 0x7f090051
+			public const int colorAccent = 2131296337;
+			
+			// aapt resource value: 0x7f09004f
+			public const int colorPrimary = 2131296335;
+			
+			// aapt resource value: 0x7f090050
+			public const int colorPrimaryDark = 2131296336;
+			
+			// aapt resource value: 0x7f090066
+			public const int common_google_signin_btn_text_dark = 2131296358;
 			
 			// aapt resource value: 0x7f090000
 			public const int common_google_signin_btn_text_dark_default = 2131296256;
@@ -1403,8 +1412,8 @@ namespace UVapp
 			// aapt resource value: 0x7f090003
 			public const int common_google_signin_btn_text_dark_pressed = 2131296259;
 			
-			// aapt resource value: 0x7f090064
-			public const int common_google_signin_btn_text_light = 2131296356;
+			// aapt resource value: 0x7f090067
+			public const int common_google_signin_btn_text_light = 2131296359;
 			
 			// aapt resource value: 0x7f090004
 			public const int common_google_signin_btn_text_light_default = 2131296260;
@@ -1418,14 +1427,14 @@ namespace UVapp
 			// aapt resource value: 0x7f090007
 			public const int common_google_signin_btn_text_light_pressed = 2131296263;
 			
-			// aapt resource value: 0x7f090065
-			public const int common_google_signin_btn_tint = 2131296357;
+			// aapt resource value: 0x7f090068
+			public const int common_google_signin_btn_tint = 2131296360;
 			
 			// aapt resource value: 0x7f090044
 			public const int design_bottom_navigation_shadow_color = 2131296324;
 			
-			// aapt resource value: 0x7f090066
-			public const int design_error = 2131296358;
+			// aapt resource value: 0x7f090069
+			public const int design_error = 2131296361;
 			
 			// aapt resource value: 0x7f090045
 			public const int design_fab_shadow_end_color = 2131296325;
@@ -1451,8 +1460,8 @@ namespace UVapp
 			// aapt resource value: 0x7f09004c
 			public const int design_snackbar_background_color = 2131296332;
 			
-			// aapt resource value: 0x7f090067
-			public const int design_tint_password_toggle = 2131296359;
+			// aapt resource value: 0x7f09006a
+			public const int design_tint_password_toggle = 2131296362;
 			
 			// aapt resource value: 0x7f09001a
 			public const int dim_foreground_disabled_material_dark = 2131296282;
@@ -1574,11 +1583,11 @@ namespace UVapp
 			// aapt resource value: 0x7f09003e
 			public const int switch_thumb_disabled_material_light = 2131296318;
 			
-			// aapt resource value: 0x7f090068
-			public const int switch_thumb_material_dark = 2131296360;
+			// aapt resource value: 0x7f09006b
+			public const int switch_thumb_material_dark = 2131296363;
 			
-			// aapt resource value: 0x7f090069
-			public const int switch_thumb_material_light = 2131296361;
+			// aapt resource value: 0x7f09006c
+			public const int switch_thumb_material_light = 2131296364;
 			
 			// aapt resource value: 0x7f09003f
 			public const int switch_thumb_normal_material_dark = 2131296319;
@@ -2504,6 +2513,9 @@ namespace UVapp
 			// aapt resource value: 0x7f0b003e
 			public const int CTRL = 2131427390;
 			
+			// aapt resource value: 0x7f0b00b2
+			public const int ExposureTimeText = 2131427506;
+			
 			// aapt resource value: 0x7f0b003f
 			public const int FUNCTION = 2131427391;
 			
@@ -2516,11 +2528,14 @@ namespace UVapp
 			// aapt resource value: 0x7f0b0042
 			public const int SYM = 2131427394;
 			
-			// aapt resource value: 0x7f0b00c9
-			public const int accountrtxt = 2131427529;
+			// aapt resource value: 0x7f0b00b0
+			public const int accUVProgressBar = 2131427504;
 			
-			// aapt resource value: 0x7f0b00b9
-			public const int action0 = 2131427513;
+			// aapt resource value: 0x7f0b00ca
+			public const int accountrtxt = 2131427530;
+			
+			// aapt resource value: 0x7f0b00ba
+			public const int action0 = 2131427514;
 			
 			// aapt resource value: 0x7f0b0086
 			public const int action_bar = 2131427462;
@@ -2543,17 +2558,17 @@ namespace UVapp
 			// aapt resource value: 0x7f0b0064
 			public const int action_bar_title = 2131427428;
 			
-			// aapt resource value: 0x7f0b00b6
-			public const int action_container = 2131427510;
+			// aapt resource value: 0x7f0b00b7
+			public const int action_container = 2131427511;
 			
 			// aapt resource value: 0x7f0b0087
 			public const int action_context_bar = 2131427463;
 			
-			// aapt resource value: 0x7f0b00bd
-			public const int action_divider = 2131427517;
+			// aapt resource value: 0x7f0b00be
+			public const int action_divider = 2131427518;
 			
-			// aapt resource value: 0x7f0b00b7
-			public const int action_image = 2131427511;
+			// aapt resource value: 0x7f0b00b8
+			public const int action_image = 2131427512;
 			
 			// aapt resource value: 0x7f0b0003
 			public const int action_menu_divider = 2131427331;
@@ -2570,17 +2585,23 @@ namespace UVapp
 			// aapt resource value: 0x7f0b0066
 			public const int action_mode_close_button = 2131427430;
 			
-			// aapt resource value: 0x7f0b00b8
-			public const int action_text = 2131427512;
+			// aapt resource value: 0x7f0b00b9
+			public const int action_text = 2131427513;
 			
-			// aapt resource value: 0x7f0b00c6
-			public const int actions = 2131427526;
+			// aapt resource value: 0x7f0b00c7
+			public const int actions = 2131427527;
 			
 			// aapt resource value: 0x7f0b0067
 			public const int activity_chooser_view_content = 2131427431;
 			
+			// aapt resource value: 0x7f0b00af
+			public const int acummulatedUVText = 2131427503;
+			
 			// aapt resource value: 0x7f0b0032
 			public const int add = 2131427378;
+			
+			// aapt resource value: 0x7f0b00b5
+			public const int additionalTimeText = 2131427509;
 			
 			// aapt resource value: 0x7f0b0022
 			public const int adjust_height = 2131427362;
@@ -2597,9 +2618,6 @@ namespace UVapp
 			// aapt resource value: 0x7f0b0043
 			public const int always = 2131427395;
 			
-			// aapt resource value: 0x7f0b00af
-			public const int appExposureTimeText = 2131427503;
-			
 			// aapt resource value: 0x7f0b0060
 			public const int async = 2131427424;
 			
@@ -2609,8 +2627,8 @@ namespace UVapp
 			// aapt resource value: 0x7f0b00aa
 			public const int bandConnectionText = 2131427498;
 			
-			// aapt resource value: 0x7f0b00b0
-			public const int bandExposureTimeText = 2131427504;
+			// aapt resource value: 0x7f0b00b1
+			public const int bandExposureTimeText = 2131427505;
 			
 			// aapt resource value: 0x7f0b003a
 			public const int beginning = 2131427386;
@@ -2624,8 +2642,8 @@ namespace UVapp
 			// aapt resource value: 0x7f0b006d
 			public const int buttonPanel = 2131427437;
 			
-			// aapt resource value: 0x7f0b00ba
-			public const int cancel_action = 2131427514;
+			// aapt resource value: 0x7f0b00bb
+			public const int cancel_action = 2131427515;
 			
 			// aapt resource value: 0x7f0b004f
 			public const int center = 2131427407;
@@ -2639,8 +2657,8 @@ namespace UVapp
 			// aapt resource value: 0x7f0b007d
 			public const int checkbox = 2131427453;
 			
-			// aapt resource value: 0x7f0b00c2
-			public const int chronometer = 2131427522;
+			// aapt resource value: 0x7f0b00c3
+			public const int chronometer = 2131427523;
 			
 			// aapt resource value: 0x7f0b0058
 			public const int clip_horizontal = 2131427416;
@@ -2651,8 +2669,8 @@ namespace UVapp
 			// aapt resource value: 0x7f0b0044
 			public const int collapseActionView = 2131427396;
 			
-			// aapt resource value: 0x7f0b00a9
-			public const int connectbtn = 2131427497;
+			// aapt resource value: 0x7f0b00ab
+			public const int connectbtn = 2131427499;
 			
 			// aapt resource value: 0x7f0b0097
 			public const int container = 2131427479;
@@ -2666,14 +2684,14 @@ namespace UVapp
 			// aapt resource value: 0x7f0b00a6
 			public const int createButton = 2131427494;
 			
-			// aapt resource value: 0x7f0b00ab
-			public const int currentUVText = 2131427499;
-			
 			// aapt resource value: 0x7f0b00ac
-			public const int currentUVWeatherText = 2131427500;
+			public const int currentUVNumText = 2131427500;
 			
-			// aapt resource value: 0x7f0b00b4
-			public const int currentlySamplingText = 2131427508;
+			// aapt resource value: 0x7f0b00ad
+			public const int currentUVText = 2131427501;
+			
+			// aapt resource value: 0x7f0b00b6
+			public const int currentlySamplingText = 2131427510;
 			
 			// aapt resource value: 0x7f0b0077
 			public const int custom = 2131427447;
@@ -2714,8 +2732,8 @@ namespace UVapp
 			// aapt resource value: 0x7f0b003b
 			public const int end = 2131427387;
 			
-			// aapt resource value: 0x7f0b00c8
-			public const int end_padder = 2131427528;
+			// aapt resource value: 0x7f0b00c9
+			public const int end_padder = 2131427529;
 			
 			// aapt resource value: 0x7f0b004a
 			public const int enterAlways = 2131427402;
@@ -2747,9 +2765,6 @@ namespace UVapp
 			// aapt resource value: 0x7f0b0062
 			public const int forever = 2131427426;
 			
-			// aapt resource value: 0x7f0b00b5
-			public const int gettingUvFromWeatherText = 2131427509;
-			
 			// aapt resource value: 0x7f0b000a
 			public const int ghost_view = 2131427338;
 			
@@ -2765,8 +2780,8 @@ namespace UVapp
 			// aapt resource value: 0x7f0b006c
 			public const int icon = 2131427436;
 			
-			// aapt resource value: 0x7f0b00c7
-			public const int icon_group = 2131427527;
+			// aapt resource value: 0x7f0b00c8
+			public const int icon_group = 2131427528;
 			
 			// aapt resource value: 0x7f0b0024
 			public const int icon_only = 2131427364;
@@ -2777,11 +2792,11 @@ namespace UVapp
 			// aapt resource value: 0x7f0b0069
 			public const int image = 2131427433;
 			
-			// aapt resource value: 0x7f0b00c3
-			public const int info = 2131427523;
+			// aapt resource value: 0x7f0b00c4
+			public const int info = 2131427524;
 			
-			// aapt resource value: 0x7f0b00cc
-			public const int instructionText = 2131427532;
+			// aapt resource value: 0x7f0b00cd
+			public const int instructionText = 2131427533;
 			
 			// aapt resource value: 0x7f0b0063
 			public const int italic = 2131427427;
@@ -2816,14 +2831,14 @@ namespace UVapp
 			// aapt resource value: 0x7f0b00a7
 			public const int logintxt = 2131427495;
 			
-			// aapt resource value: 0x7f0b00d3
-			public const int masked = 2131427539;
+			// aapt resource value: 0x7f0b00d6
+			public const int masked = 2131427542;
 			
-			// aapt resource value: 0x7f0b00bc
-			public const int media_actions = 2131427516;
+			// aapt resource value: 0x7f0b00bd
+			public const int media_actions = 2131427517;
 			
-			// aapt resource value: 0x7f0b00d1
-			public const int message = 2131427537;
+			// aapt resource value: 0x7f0b00d4
+			public const int message = 2131427540;
 			
 			// aapt resource value: 0x7f0b003c
 			public const int middle = 2131427388;
@@ -2846,17 +2861,17 @@ namespace UVapp
 			// aapt resource value: 0x7f0b001f
 			public const int normal = 2131427359;
 			
-			// aapt resource value: 0x7f0b00c5
-			public const int notification_background = 2131427525;
+			// aapt resource value: 0x7f0b00c6
+			public const int notification_background = 2131427526;
+			
+			// aapt resource value: 0x7f0b00c0
+			public const int notification_main_column = 2131427520;
 			
 			// aapt resource value: 0x7f0b00bf
-			public const int notification_main_column = 2131427519;
+			public const int notification_main_column_container = 2131427519;
 			
-			// aapt resource value: 0x7f0b00be
-			public const int notification_main_column_container = 2131427518;
-			
-			// aapt resource value: 0x7f0b00d0
-			public const int okButton = 2131427536;
+			// aapt resource value: 0x7f0b00d3
+			public const int okButton = 2131427539;
 			
 			// aapt resource value: 0x7f0b0056
 			public const int parallax = 2131427414;
@@ -2882,32 +2897,35 @@ namespace UVapp
 			// aapt resource value: 0x7f0b007f
 			public const int radio = 2131427455;
 			
-			// aapt resource value: 0x7f0b00ca
-			public const int registerButton = 2131427530;
-			
 			// aapt resource value: 0x7f0b00cb
-			public const int registertxt = 2131427531;
+			public const int registerButton = 2131427531;
 			
-			// aapt resource value: 0x7f0b00cd
-			public const int resultImg = 2131427533;
+			// aapt resource value: 0x7f0b00cc
+			public const int registertxt = 2131427532;
+			
+			// aapt resource value: 0x7f0b00d1
+			public const int resultExplainText = 2131427537;
 			
 			// aapt resource value: 0x7f0b00ce
-			public const int resultText = 2131427534;
+			public const int resultImg = 2131427534;
+			
+			// aapt resource value: 0x7f0b00d0
+			public const int resultNumText = 2131427536;
+			
+			// aapt resource value: 0x7f0b00cf
+			public const int resultText = 2131427535;
 			
 			// aapt resource value: 0x7f0b0054
 			public const int right = 2131427412;
 			
-			// aapt resource value: 0x7f0b00c4
-			public const int right_icon = 2131427524;
+			// aapt resource value: 0x7f0b00c5
+			public const int right_icon = 2131427525;
 			
-			// aapt resource value: 0x7f0b00c0
-			public const int right_side = 2131427520;
+			// aapt resource value: 0x7f0b00c1
+			public const int right_side = 2131427521;
 			
 			// aapt resource value: 0x7f0b00a8
 			public const int root_layout = 2131427496;
-			
-			// aapt resource value: 0x7f0b00b3
-			public const int samplingIntervalText = 2131427507;
 			
 			// aapt resource value: 0x7f0b0020
 			public const int satellite = 2131427360;
@@ -2984,8 +3002,8 @@ namespace UVapp
 			// aapt resource value: 0x7f0b0030
 			public const int showTitle = 2131427376;
 			
-			// aapt resource value: 0x7f0b00b1
-			public const int skinColorText = 2131427505;
+			// aapt resource value: 0x7f0b00b3
+			public const int skinColorText = 2131427507;
 			
 			// aapt resource value: 0x7f0b0095
 			public const int smallLabel = 2131427477;
@@ -3020,8 +3038,8 @@ namespace UVapp
 			// aapt resource value: 0x7f0b0055
 			public const int start = 2131427413;
 			
-			// aapt resource value: 0x7f0b00bb
-			public const int status_bar_latest_event_content = 2131427515;
+			// aapt resource value: 0x7f0b00bc
+			public const int status_bar_latest_event_content = 2131427516;
 			
 			// aapt resource value: 0x7f0b0080
 			public const int submenuarrow = 2131427456;
@@ -3035,8 +3053,8 @@ namespace UVapp
 			// aapt resource value: 0x7f0b0019
 			public const int tag_transition_group = 2131427353;
 			
-			// aapt resource value: 0x7f0b00cf
-			public const int takePhotoButton = 2131427535;
+			// aapt resource value: 0x7f0b00d2
+			public const int takePhotoButton = 2131427538;
 			
 			// aapt resource value: 0x7f0b0021
 			public const int terrain = 2131427361;
@@ -3062,11 +3080,11 @@ namespace UVapp
 			// aapt resource value: 0x7f0b0015
 			public const int textinput_error = 2131427349;
 			
-			// aapt resource value: 0x7f0b00c1
-			public const int time = 2131427521;
+			// aapt resource value: 0x7f0b00c2
+			public const int time = 2131427522;
 			
-			// aapt resource value: 0x7f0b00b2
-			public const int timeYouCanSpendText = 2131427506;
+			// aapt resource value: 0x7f0b00b4
+			public const int timeYouCanSpendText = 2131427508;
 			
 			// aapt resource value: 0x7f0b001c
 			public const int title = 2131427356;
@@ -3079,6 +3097,9 @@ namespace UVapp
 			
 			// aapt resource value: 0x7f0b0049
 			public const int top = 2131427401;
+			
+			// aapt resource value: 0x7f0b00a9
+			public const int topLayout = 2131427497;
 			
 			// aapt resource value: 0x7f0b0078
 			public const int topPanel = 2131427448;
@@ -3114,16 +3135,13 @@ namespace UVapp
 			public const int username = 2131427491;
 			
 			// aapt resource value: 0x7f0b00ae
-			public const int uvMinutesLeftText = 2131427502;
-			
-			// aapt resource value: 0x7f0b00ad
-			public const int uvMinutesText = 2131427501;
+			public const int uvMinutesText = 2131427502;
 			
 			// aapt resource value: 0x7f0b0016
 			public const int view_offset_helper = 2131427350;
 			
-			// aapt resource value: 0x7f0b00d2
-			public const int visible = 2131427538;
+			// aapt resource value: 0x7f0b00d5
+			public const int visible = 2131427541;
 			
 			// aapt resource value: 0x7f0b0026
 			public const int wide = 2131427366;
@@ -4454,6 +4472,12 @@ namespace UVapp
 			
 			// aapt resource value: 0x7f0c0181
 			public const int Theme_Custom1 = 2131493249;
+			
+			// aapt resource value: 0x7f0c0182
+			public const int Theme_Custom2 = 2131493250;
+			
+			// aapt resource value: 0x7f0c0183
+			public const int Theme_Custom3 = 2131493251;
 			
 			// aapt resource value: 0x7f0c0169
 			public const int Theme_Design = 2131493225;

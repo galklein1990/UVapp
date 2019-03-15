@@ -29,7 +29,25 @@
 		android:layout_marginLeft="20sp"
 		android:layout_marginRight="20sp"
 		android:id="@+id/resultText" />
-
+  
+  <TextView
+    android:text=""
+		android:textSize="30sp"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="20sp"
+		android:layout_marginRight="20sp"
+		android:id="@+id/resultNumText" />
+  
+    <TextView
+    android:text=""
+		android:textSize="15sp"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="20sp"
+		android:layout_marginRight="20sp"
+		android:id="@+id/resultExplainText" />
+  
   <Button
 		android:text="Take Photo"
 		android:layout_width="wrap_content"

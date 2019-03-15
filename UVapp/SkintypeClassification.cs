@@ -22,7 +22,9 @@ namespace UVapp
 
     class SkintypeClassification
     {
-        
+        /* Classification is done by the server
+         *
+         */
         private static readonly Uri funcUri = new Uri("https://uvsafe-skin.azurewebsites.net/api/skintypeClassify?code=kcz53oGm8HnLIpbaAZqR/UQOzKicu2kK5VS1QOPyP0ayNVthdJ7zpA==");
 
         public static async Task<HttpResponseMessage> serverClassifyImage(Bitmap image, HttpClient httpClient)

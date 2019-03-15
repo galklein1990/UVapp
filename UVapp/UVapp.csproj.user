@@ -4,6 +4,6 @@
     <SelectedDevice>Meizu M6 Note</SelectedDevice>
     <DefaultDevice>Android_Accelerated_x86_Oreo</DefaultDevice>
     <AndroidDesignerPreferredDevice>Nexus 4</AndroidDesignerPreferredDevice>
-    <AndroidDesignerPreferredTheme>Theme.AppCompat</AndroidDesignerPreferredTheme>
+    <AndroidDesignerPreferredTheme>Theme.AppCompat.Light</AndroidDesignerPreferredTheme>
   </PropertyGroup>
 </Project>

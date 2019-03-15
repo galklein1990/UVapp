@@ -30,6 +30,9 @@ namespace UVapp
 
         ImageView resultImageView;
         TextView resultTextView;
+        TextView resultNumView;
+        TextView resultExplainView;
+
 
         Button okButton;
         Button takePhotoButton;
@@ -50,6 +53,8 @@ namespace UVapp
 
             resultTextView = FindViewById<TextView>(Resource.Id.resultText);
             resultImageView = FindViewById<ImageView>(Resource.Id.resultImg);
+            resultNumView = FindViewById<TextView>(Resource.Id.resultNumText);
+            resultExplainView = FindViewById<TextView>(Resource.Id.resultExplainText);
 
             user = User.deserializeJson(Intent.GetStringExtra("userJson"));
         }
@@ -102,7 +107,9 @@ namespace UVapp
                 user.skinType = deserialized.skinType;
 
                 RunOnUiThread(() => {
-                    resultTextView.Text = $"Your skin type is {skinType.RomanNumeralsName()} where I is palest and VI is darkest";
+                    resultTextView.Text = $"Your skin type is";
+                    resultNumView.Text = $"{deserialized.skinType}";
+                    resultExplainView.Text = "1 - Palest\n6 - Darkest";
                     takePhotoButton.Text = "Retake";
                     okButton.Visibility = ViewStates.Visible;
                     okButton.Clickable = true;

@@ -48,8 +48,9 @@ namespace UVapp
         private IBandClient bandClient;
         private IBandConnectionCallback bandConnCallback;   // band connection "event listener"
 
-        TextView currUVText, currUVWeatherText, bandConnText, uvMinutesText, samplingIntervalText, currentlySamplingText;
-        TextView appExposureTimeText, bandExposureTimeText, skinColorText, timeYouCanSpendText, uvMinutesLeftText, gettingUvWeatherText;
+        TextView currUvNumText, currUVWeatherText, bandConnText, accumulatedUVText,  currentlySamplingText;
+        TextView  exposureTimeText, skinColorText, additionalTimeText, gettingUvWeatherText;
+        ProgressBar accUVProgressBar;
         View rootLayout;
         Button connectBandButton;
 
@@ -91,7 +92,7 @@ namespace UVapp
         bool bandConnPreviouslySuccessful = false;
 
         // Constant strings that don't need to be retyped
-        readonly string bandConnTextBase = "Band Connection: ";
+        readonly string bandConnTextBase = "Band: ";
         readonly string samplingIntervalTextBase = "Sampling interval: ";
         readonly string currUVTextBase = "Measured UV: ";
         readonly string currUVWeatherTextBase = "Current UV according to Weather: ";
@@ -116,18 +117,19 @@ namespace UVapp
                 StartActivity(loginIntent);
             }
 
+            accUVProgressBar = FindViewById<ProgressBar>(Resource.Id.accUVProgressBar);
             bandConnText = FindViewById<TextView>(Resource.Id.bandConnectionText);
-            currUVText = FindViewById<TextView>(Resource.Id.currentUVText);
-            currUVWeatherText = FindViewById<TextView>(Resource.Id.currentUVWeatherText);
-            uvMinutesText = FindViewById<TextView>(Resource.Id.uvMinutesText);
-            samplingIntervalText = FindViewById<TextView>(Resource.Id.samplingIntervalText);
+            currUvNumText = FindViewById<TextView>(Resource.Id.currentUVNumText);
+            //currUVWeatherText = FindViewById<TextView>(Resource.Id.currentUVWeatherText);
+            accumulatedUVText = FindViewById<TextView>(Resource.Id.acummulatedUVText);
+            //samplingIntervalText = FindViewById<TextView>(Resource.Id.samplingIntervalText);
             currentlySamplingText = FindViewById<TextView>(Resource.Id.currentlySamplingText);
-            appExposureTimeText = FindViewById<TextView>(Resource.Id.appExposureTimeText);
-            bandExposureTimeText = FindViewById<TextView>(Resource.Id.bandExposureTimeText);
+            //appExposureTimeText = FindViewById<TextView>(Resource.Id.appExposureTimeText);
+            exposureTimeText = FindViewById<TextView>(Resource.Id.ExposureTimeText);
             skinColorText = FindViewById<TextView>(Resource.Id.skinColorText);
-            timeYouCanSpendText = FindViewById<TextView>(Resource.Id.timeYouCanSpendText);
-            uvMinutesLeftText = FindViewById<TextView>(Resource.Id.uvMinutesLeftText);
-            gettingUvWeatherText = FindViewById<TextView>(Resource.Id.gettingUvFromWeatherText);
+            additionalTimeText = FindViewById<TextView>(Resource.Id.additionalTimeText);
+            //uvMinutesLeftText = FindViewById<TextView>(Resource.Id.uvMinutesLeftText);
+            //gettingUvWeatherText = FindViewById<TextView>(Resource.Id.gettingUvFromWeatherText);
 
             rootLayout = FindViewById(Resource.Id.root_layout);
 
@@ -170,7 +172,7 @@ namespace UVapp
             saveDataToDBTimer = new Timer(MinutesToMS(3));
             saveDataToDBTimer.Elapsed += saveDataToDB;
             saveDataToDBTimer.AutoReset = true;
-            saveDataToDBTimer.Enabled = false;
+            saveDataToDBTimer.Enabled = true;
 
             lastUvSampleTime = DateTime.MinValue;
 
@@ -184,6 +186,12 @@ namespace UVapp
                     uvRadiationAccumulated = user.accumulatedUV;
                     exposureMinutesBand = user.TimeExposed;
                     allowedUvRadiationLeft = userSkinType.UVRadiationToBurn() - uvRadiationAccumulated;
+                }
+                else
+                {
+                    allowedUvRadiationLeft = userSkinType.UVRadiationToBurn();
+                    uvRadiationAccumulated = 0;
+                    
                 }
             }
             else
@@ -202,18 +210,38 @@ namespace UVapp
             }
             
 
-            samplingIntervalText.Text = ""; //$"Sampling interval: {samplingIntervalMinutes} minutes";
-            currUVText.Text = "";
-            currUVWeatherText.Text = "";
+            //samplingIntervalText.Text = $"Sampling interval: {samplingIntervalMinutes} minutes";
+            //currUVWeatherText.Text = "";
             bandConnText.Text = "";
-            uvMinutesText.Text = uvMinutesTextBase + $"{(int)uvRadiationAccumulated} ({(int)(uvRadiationAccumulated/userSkinType.UVRadiationToBurn())}%)";
             currentlySamplingText.Text = "";
             skinColorText.Text = skinColorTextBase + userSkinType.RomanNumeralsName();
-            timeYouCanSpendText.Text = timeYouCanSpendTextBase + "Safe";
-            appExposureTimeText.Text = ""; //appExposureTimeTextBase + 0;
-            bandExposureTimeText.Text = "";
-            uvMinutesLeftText.Text = ""; //uvMinutesLeftTextBase + (int)uvMinutesLeft;
-            gettingUvWeatherText.Text = "";
+
+            updateGUI();
+            //appExposureTimeText.Text = appExposureTimeTextBase + 0;
+            //uvMinutesLeftText.Text = uvMinutesLeftTextBase + (int)uvMinutesLeft;
+            //gettingUvWeatherText.Text = "";
+        }
+
+        void updateGUI()
+        {
+            int roundedUV = (int)Math.Round(currentUV, 0, MidpointRounding.AwayFromZero);
+            exposureTimeText.Text = FormatTimeAmountForUser(exposureMinutesBand);
+            currUvNumText.Text = $"{roundedUV} ({UVvalues.UvIntToEnum(roundedUV)})";
+            int uvPercentage = (int)(uvRadiationAccumulated * 100 / userSkinType.UVRadiationToBurn());
+
+
+            accumulatedUVText.Text = $"{uvPercentage}%";
+            accUVProgressBar.Progress = uvPercentage;
+            //uvMinutesLeftText.Text = uvMinutesLeftTextBase + (int)uvMinutesLeft;
+            if (currentUV != 0)
+            {
+
+                additionalTimeText.Text = FormatTimeAmountForUser(allowedUvRadiationLeft / currentUV);
+            }
+            else
+            {
+                additionalTimeText.Text = "Safe";
+            }
         }
 
         protected override void OnSaveInstanceState(Bundle outState)
@@ -240,7 +268,11 @@ namespace UVapp
 
         private async void ConnectBand(object sender, System.EventArgs e)
         {
-           
+            RunOnUiThread(() =>
+            {
+                bandConnText.Text = bandConnTextBase + "\nConnecting...";
+            });
+
             IBandInfo[] pairedBands = BandClientManager.Instance.GetPairedBands();
 
             if (pairedBands.Length < 1)
@@ -267,20 +299,29 @@ namespace UVapp
 
                 bandConnCallback = bandClient.RegisterConnectionCallback(async connectionState =>
                 {
-                    RunOnUiThread(() =>
-                    {
-                        bandConnText.Text = bandConnTextBase + connectionState.Name();
-                    });
+                    
                     
                     if (connectionState == ConnectionState.Connected)
                     {
+                        RunOnUiThread(() =>
+                        {
+                            bandConnText.Text = bandConnTextBase + "Connected";
+                            connectBandButton.Clickable = false;
+                            connectBandButton.Visibility = ViewStates.Invisible;
+                        });
+
                         bandConnPreviouslySuccessful = true;
                         bandConnTimer.Enabled = false;
                         bandConnTimeoutTimer.Enabled = false;
+                        uvSampleTimer.Interval = 1000;
                         uvSampleTimer.Start();
                     }
                     else
                     {
+                        RunOnUiThread(() =>
+                        {
+                            bandConnText.Text = bandConnTextBase + "\nConnecting...";
+                        });
                         connLostSinceLastSample = true;
 
                         if (bandConnPreviouslySuccessful)
@@ -289,7 +330,7 @@ namespace UVapp
                         }
                         
                         bandConnTimeoutTimer.Enabled = true;
-
+                        
                         RunOnUiThread(() =>
                         {
                             currentlySamplingText.Text = "";
@@ -364,6 +405,7 @@ namespace UVapp
                     {
                         uvRadiationAccumulated += currentUV * exposureSinceLastSample;
                         allowedUvRadiationLeft -= currentUV * exposureSinceLastSample;
+                        saveDataToDBTimer.Enabled = true;
                     }
                     else
                     {
@@ -400,22 +442,7 @@ namespace UVapp
                     }
 
                     RunOnUiThread(() => {      // To access the text, you need to run on ui thread
-                        currUVText.Text = currUVTextBase + $"{roundedUV} ({UVvalues.UvIntToEnum(roundedUV)})";
-                        uvMinutesText.Text = uvMinutesTextBase + $"{(int)uvRadiationAccumulated} ({(int)(uvRadiationAccumulated*100 / userSkinType.UVRadiationToBurn())}%)";
-                        //uvMinutesLeftText.Text = uvMinutesLeftTextBase + (int)uvMinutesLeft;
-
-                        if (currentUV != 0)
-                        {
-
-                            timeYouCanSpendText.Text = timeYouCanSpendTextBase + FormatTimeAmountForUser(allowedUvRadiationLeft / currentUV);
-                        }
-                        else
-                        {
-                            timeYouCanSpendText.Text = timeYouCanSpendTextBase + "Safe";
-                        }
-
-                        //appExposureTimeText.Text = appExposureTimeTextBase + exposureMinutesApp;
-                        bandExposureTimeText.Text = bandExposureTimeTextBase + FormatTimeAmountForUser(exposureMinutesBand);
+                        updateGUI();
 
                         currentlySamplingText.Text = "";
                     });
@@ -425,7 +452,7 @@ namespace UVapp
             }
             catch (BandException ex)
             {
-                currUVText.Text = "Error Reading UV: " + ex.Message;
+                currUvNumText.Text = "Error Reading UV: " + ex.Message;
             }
         }
 
@@ -435,6 +462,7 @@ namespace UVapp
             RunOnUiThread(() => {      // To access the text, you need to run on ui thread
                 currentlySamplingText.Text = "Sampling UV...";
             });
+            
             uvSampleTimer.Interval = SecondsToMS(uvBandSamplingIntervalSeconds);
             await SampleBandUV();
             
@@ -449,12 +477,16 @@ namespace UVapp
                 httpClient = new HttpClient();
             }
 
+            /*
             RunOnUiThread(() =>
             {
                 gettingUvWeatherText.Text = "Getting UV from weather...";
             });
-            weatherCurrentUV = await WeatherUV.GetWeatherUvAsync(httpClient, currentLocation.Latitude, currentLocation.Longitude);
+            */
 
+            weatherCurrentUV = await WeatherUV.GetWeatherUvAsync(httpClient, currentLocation.Latitude, currentLocation.Longitude);
+            
+            /*
             RunOnUiThread(() =>
             {
                 gettingUvWeatherText.Text = "";
@@ -463,6 +495,7 @@ namespace UVapp
                 else
                     currUVWeatherText.Text = "Error getting weather UV!";
             });
+            */
         }
 
         private async void updateLocationTimerElapsed(object sender, System.EventArgs args)
@@ -485,6 +518,13 @@ namespace UVapp
 
         private void BandConnTimeoutElapsed(object sender, System.EventArgs args)
         {
+            RunOnUiThread(() =>
+            {
+                bandConnText.Text = bandConnTextBase + "\nCould not connect";
+                connectBandButton.Clickable = true;
+                connectBandButton.Visibility = ViewStates.Visible;
+            });
+            
             // TODO: show "Could not connect band" message and show a retry button. Use ConnectBand for the click event
             if (bandConnPreviouslySuccessful)
                 NotifyUser("Band Connection Lost", "Check your bluetooth and band and reconnect");
@@ -499,6 +539,7 @@ namespace UVapp
             }
             user.TimeExposed = exposureMinutesBand;
             user.accumulatedUV = uvRadiationAccumulated;
+            user.Date = User.getTodayDateString();
 
             UserManager.UpdateUser(user);
         }
@@ -510,7 +551,7 @@ namespace UVapp
             {
                 httpClient = new HttpClient();
             }
-            return await ServerRecommendations.getEnumUVRecommendation(uvi, httpClient);
+            return ClientRecommendations.getEnumUVRecommendation(uvi);
         }
 
         private string GetIntUVRecommendation(int uv)
@@ -529,11 +570,11 @@ namespace UVapp
             }
             else if (minutes < 120)
             {
-                return $"{(int)(minutes / 60)} hour and {((int)minutes)%60} minutes";
+                return $"{(int)(minutes / 60)}h {((int)minutes)%60}m";
             }
             else
             {
-                return $"{(int)(minutes / 60)} hours and {((int)minutes) % 60} minutes";
+                return $"{(int)(minutes / 60)}h {((int)minutes) % 60}m";
             }
         }
         double MinutesToMS(double minutes)
