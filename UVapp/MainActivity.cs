@@ -62,7 +62,7 @@ namespace UVapp
         bool locationPermissionGranted = false;
 
         double currentUV;
-        double weatherCurrentUV;
+        double weatherCurrentUV = -1;
         double peakUV;
         
         double uvRadiationAccumulated = 0;  // The total accumulated radiation the user was exposed to in minutes*UVI
@@ -161,7 +161,7 @@ namespace UVapp
             updateLocationTimer = new Timer(1000);
             updateLocationTimer.Elapsed += updateLocationTimerElapsed;
             updateLocationTimer.AutoReset = true;
-            updateLocationTimer.Enabled = true;
+            updateLocationTimer.Enabled = true;     // The timer elapsed checks for permission
 
 
             uvWeatherTimer = new Timer(1000);     // Initial interval is 1 second and it is changed after first request
@@ -172,7 +172,7 @@ namespace UVapp
             saveDataToDBTimer = new Timer(MinutesToMS(3));
             saveDataToDBTimer.Elapsed += saveDataToDB;
             saveDataToDBTimer.AutoReset = true;
-            saveDataToDBTimer.Enabled = true;
+            saveDataToDBTimer.Enabled = false; // Enabled after sample
 
             lastUvSampleTime = DateTime.MinValue;
 
@@ -254,7 +254,8 @@ namespace UVapp
             outState.PutLong("exposureMinutesApp", exposureMinutesApp);
             outState.PutLong("exposureMinutesBand", exposureMinutesBand);
         }
-
+       
+        /*
         protected override void OnRestoreInstanceState(Bundle savedInstanceState)
         {
             base.OnRestoreInstanceState(savedInstanceState);
@@ -265,7 +266,7 @@ namespace UVapp
             exposureMinutesApp = savedInstanceState.GetLong("exposureMinutesApp");
             exposureMinutesBand = savedInstanceState.GetLong("exposureMinutesBand");
         }
-
+        */
         private async void ConnectBand(object sender, System.EventArgs e)
         {
             RunOnUiThread(() =>
@@ -401,7 +402,7 @@ namespace UVapp
 
 
                     // Update accumulated radiation
-                    if (currentUV != 0)
+                    if (currentUV != 0 || weatherCurrentUV ==-1)
                     {
                         uvRadiationAccumulated += currentUV * exposureSinceLastSample;
                         allowedUvRadiationLeft -= currentUV * exposureSinceLastSample;
@@ -420,6 +421,8 @@ namespace UVapp
                     
                     connLostSinceLastSample = false;
                     lastUvSampleTime = DateTime.Now;
+
+                    saveDataToDBTimer.Enabled = true;
 
                     if (peakUV < currentUV)
                     {
@@ -483,8 +486,8 @@ namespace UVapp
                 gettingUvWeatherText.Text = "Getting UV from weather...";
             });
             */
-
-            weatherCurrentUV = await WeatherUV.GetWeatherUvAsync(httpClient, currentLocation.Latitude, currentLocation.Longitude);
+            if (currentLocation != null)
+                weatherCurrentUV = await WeatherUV.GetWeatherUvAsync(httpClient, currentLocation.Latitude, currentLocation.Longitude);
             
             /*
             RunOnUiThread(() =>
@@ -502,18 +505,20 @@ namespace UVapp
         {
             updateLocationTimer.Interval = MinutesToMS(locationSampleIntervalMinutes);
             await UpdateLocation(true);   // permissionCheck = true
-
+            /*
             if (!locationPermissionGranted)
             {
                 RunOnUiThread(() => { currUVWeatherText.Text = currUVWeatherTextBase + "Location permission not granted"; });
                 return;
             }
+            
 
             if (currentLocation == null)
             {
                 RunOnUiThread(() => { currUVWeatherText.Text = currUVWeatherTextBase + "Error getting location"; });
                 return;
             }
+            */
         }
 
         private void BandConnTimeoutElapsed(object sender, System.EventArgs args)
@@ -532,11 +537,13 @@ namespace UVapp
 
         private void saveDataToDB(object sender, System.EventArgs args)
         {
+            /*
             if (currentUV == 0)
             {
-                // Don't save if there is no exposure to prevent
+                // Don't save if there is no exposure to prevent unnecessary accesses to DB
                 saveDataToDBTimer.Enabled = false;
             }
+            */
             user.TimeExposed = exposureMinutesBand;
             user.accumulatedUV = uvRadiationAccumulated;
             user.Date = User.getTodayDateString();

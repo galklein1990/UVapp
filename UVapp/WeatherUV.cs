@@ -125,6 +125,9 @@ namespace UVapp
          */
         public static double CompareBandAndWeatherUV(UVIndexLevel bandUvEnum, double weatherUV)
         {
+            if (weatherUV == -1)
+                return UVvalues.UvEnumToIntUpper(bandUvEnum);
+
             if (UVvalues.UvIntToEnum((int)weatherUV) == bandUvEnum)
             {
                 return weatherUV;

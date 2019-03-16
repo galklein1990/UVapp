@@ -43,7 +43,11 @@ namespace UVapp
             //call cloud fuction to check if user is in database that returns a number describing a situation 
             UserManager userManager = new UserManager();
             User user = new User(username.Text, password.Text);
-            txt.Text = "Connecting...";
+            RunOnUiThread(() =>
+            {
+                txt.Text = "Connecting...";
+            });
+            
             int res = userManager.GetUserLoginStatus(username.Text, password.Text);
             switch (res)
             {
