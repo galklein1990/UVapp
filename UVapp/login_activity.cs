@@ -37,12 +37,13 @@ namespace UVapp
 
         public void LoginFunction(object sender, System.EventArgs e)
         {
-            RunOnUiThread(() =>
-            {
-                txt.Text = "Logging in...";
-            });
+            string usernameText = username.Text;
+            string passwordText = password.Text;
             
-            User user = UserManager.GetUser(username.Text, password.Text);
+            txt.Text = "Logging in...";
+            
+            
+            User user = UserManager.GetUser(usernameText, passwordText);
             
             if (user != null)
             {

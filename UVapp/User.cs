@@ -59,25 +59,27 @@ namespace UVapp
         {
             this.UserName = userName;
             this.Password = password;
-            this.Date = getTodayDateString();    //DateTime.Now.ToString()
-            this.Id = userName + "-" + password + "-" + this.Date;
+            this.Date = "";
+            this.Id = userName + "-" + password;
             this.skinType = (int)skinType;
             this.accumulatedUV = 0;
-
+            this.TimeExposed = 0;
             this.maxUv = 0;
         }
         public User(string userName, string password)       // TBD: just for now, for debugging purposes
         {
             this.UserName = userName;
             this.Password = password;
-            this.Date = getTodayDateString();
-            this.Id = userName + "-" + password + "-" + this.Date;
+            this.Date = "";
+            this.Id = userName + "-" + password;
             this.skinType = 0;
             this.accumulatedUV = 0;
             this.maxUv = 0;
         }
-        public User()       // TBD: just for now, for debugging purposes
+
+        public User()
         {
+            // Default constructor for JSON
         }
 
         public static string getTodayDateString()

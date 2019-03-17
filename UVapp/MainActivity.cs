@@ -191,7 +191,7 @@ namespace UVapp
                 {
                     allowedUvRadiationLeft = userSkinType.UVRadiationToBurn();
                     uvRadiationAccumulated = 0;
-                    
+                    exposureMinutesBand = 0;
                 }
             }
             else
@@ -406,7 +406,6 @@ namespace UVapp
                     {
                         uvRadiationAccumulated += currentUV * exposureSinceLastSample;
                         allowedUvRadiationLeft -= currentUV * exposureSinceLastSample;
-                        saveDataToDBTimer.Enabled = true;
                     }
                     else
                     {
@@ -422,7 +421,7 @@ namespace UVapp
                     connLostSinceLastSample = false;
                     lastUvSampleTime = DateTime.Now;
 
-                    saveDataToDBTimer.Enabled = true;
+                    saveDataToDBTimer.Start();
 
                     if (peakUV < currentUV)
                     {
@@ -535,7 +534,7 @@ namespace UVapp
                 NotifyUser("Band Connection Lost", "Check your bluetooth and band and reconnect");
         }
 
-        private void saveDataToDB(object sender, System.EventArgs args)
+        private async void saveDataToDB(object sender, System.EventArgs args)
         {
             /*
             if (currentUV == 0)
@@ -548,7 +547,7 @@ namespace UVapp
             user.accumulatedUV = uvRadiationAccumulated;
             user.Date = User.getTodayDateString();
 
-            UserManager.UpdateUser(user);
+            await UserManager.UpdateUser(user);
         }
         
 

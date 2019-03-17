@@ -52,7 +52,7 @@ namespace UVapp
 
         }
 
-        public async static void UpdateUser(User user)
+        public async static Task UpdateUser(User user)
         {
             user.Date = User.getTodayDateString();
             
